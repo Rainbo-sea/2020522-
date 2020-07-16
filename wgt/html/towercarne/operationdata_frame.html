@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title></title>
+    <link rel="stylesheet" href="../../../commonUi/aui/css/aui.css">
+    <style>
+        html,
+        body {
+            height: 100%;
+            background: rgba(0, 142, 255, 1);
+        }
+
+        .title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            font-family: PingFang SC;
+            font-weight: 500;
+            color: rgba(102, 102, 102, 1);
+            padding: 13px 10px;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .title li {
+            flex: 0 0 50px
+        }
+
+        .show_item {
+            background-color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .show_item div {
+            font-size: 10px;
+            font-family: PingFang SC;
+            font-weight: 500;
+            color: rgba(102, 102, 102, 1);
+            text-align: center;
+            flex: 0 0 50px
+        }
+
+        .title .first_li,
+        .show_item .first_li {
+            flex: 0 0 100px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="app">
+        <ul class="title">
+            <li class="first_li">运行时间</li>
+            <li>回转(°)</li>
+            <li>幅度(m)</li>
+            <li>载重(t)</li>
+            <li>力矩(%)</li>
+            <li>状态</li>
+        </ul>
+        <ul class="show">
+            <li class="show_item">
+                <div class="first_li">2020-03-02 08:12:34</div>
+                <div>347</div>
+                <div>4.65</div>
+                <div>0</div>
+                <div>0</div>
+                <div>正常</div>
+            </li>
+            <li class="show_item">
+                <div class="first_li">2020-03-02 08:12:34</div>
+                <div>347</div>
+                <div>4.65</div>
+                <div>0</div>
+                <div>0</div>
+                <div>正常</div>
+            </li>
+            <li class="show_item">
+                <div class="first_li">2020-03-02 08:12:34</div>
+                <div>347</div>
+                <div>4.65</div>
+                <div>0</div>
+                <div>0</div>
+                <div>正常</div>
+            </li>
+            <li class="show_item">
+                <div class="first_li">2020-03-02 08:12:34</div>
+                <div>347</div>
+                <div>4.65</div>
+                <div>0</div>
+                <div>0</div>
+                <div>正常</div>
+            </li>
+            <li class="show_item">
+                <div class="first_li">2020-03-02 08:12:34</div>
+                <div>347</div>
+                <div>4.65</div>
+                <div>0</div>
+                <div>0</div>
+                <div>正常</div>
+            </li>
+            <li class="show_item">
+                <div class="first_li">2020-03-02 08:12:34</div>
+                <div>347</div>
+                <div>4.65</div>
+                <div>0</div>
+                <div>0</div>
+                <div>正常</div>
+            </li>
+
+        </ul>
+    </div>
+
+</body>
+
+</html>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script src="../../../script/sha1.js"></script>
+<script src="../../../script/common.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+
+<script type="text/javascript">
+    apiready = function() {
+        var app = new Vue({
+            el: '#app',
+            data: {
+                nav_txt: '', //nav文本
+                cur_nav_i: 0,
+            },
+            created: function() {
+                this.nav_txt = [{
+                    txt: '实时数据',
+                    type: 0,
+                }, {
+                    txt: '运行数据',
+                    type: 1,
+                }, {
+                    txt: '基本数据',
+                    type: 2,
+                }, ]
+            },
+            methods: {
+                //点击切换当前nav
+                curtoggleFn: function(data, i) {
+                    this.cur_nav_i = i;
+                }
+
+            },
+        })
+
+    }
+</script>
+
+</body>
+
+</html>

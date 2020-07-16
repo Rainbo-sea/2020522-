@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <link rel="stylesheet" href="../../../commonUi/aui/css/aui.css">
+    <style>
+        html,
+        body {
+            font-family: PingFang SC;
+            font-weight: 500;
+        }
+        .nav_video{
+          display: flex;
+          justify-content: flex-start;;
+          flex-wrap: wrap;
+          align-items: center;
+
+        }
+        .nav_item{
+
+          width: 33.3%;
+          padding: 3px;
+
+        }
+        .nav_item div{
+          position: relative;
+          background:rgba(181,181,181,0.4);
+        }
+        .nav_item video{
+          width:100%;
+          height:90px;
+
+        }
+        .nav_stack{
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height:15px;
+          background:rgba(27,27,27,0.8);
+          font-size:9px;
+          font-family:PingFang SC;
+          font-weight:500;
+          color:rgba(255,255,255,1);
+          text-align: center;
+          padding: 0 5px;
+        }
+
+        .txt_online{
+          color: #00994C
+        }
+
+
+
+    </style>
+</head>
+
+<body>
+    <div id="app">
+
+      <ul class="nav_video">
+        <li class="nav_item">
+            <div>
+              <video  poster="../../../image/logo.png">
+                 <source src="movie.mp4" type="video/mp4">
+                 Your browser does not support the video tag.
+              </video>
+              <div class="nav_stack">
+                抓拍事件
+              </div>
+            </div>
+        </li>
+        <li class="nav_item">
+            <div>
+              <video  poster="../../../image/logo.png">
+                 <source src="movie.mp4" type="video/mp4">
+                 Your browser does not support the video tag.
+              </video>
+              <div class="nav_stack">
+                抓拍事件
+              </div>
+            </div>
+        </li>
+        <li class="nav_item">
+            <div>
+              <video  poster="../../../image/logo.png">
+                 <source src="movie.mp4" type="video/mp4">
+                 Your browser does not support the video tag.
+              </video>
+              <div class="nav_stack">
+                抓拍事件
+              </div>
+            </div>
+        </li>
+        <li class="nav_item">
+            <div>
+              <video  poster="../../../image/logo.png">
+                 <source src="movie.mp4" type="video/mp4">
+                 Your browser does not support the video tag.
+              </video>
+              <div class="nav_stack">
+                抓拍事件
+              </div>
+            </div>
+        </li>
+
+
+
+
+
+      </ul>
+
+    </div>
+
+    <script type="text/javascript" src="../../../script/api.js"></script>
+    <script src="../../../script/sha1.js"></script>
+    <script src="../../../script/common.js"></script>
+    <script type="text/javascript" src="../../../script/vue.js"></script>
+    <script>
+        apiready = function() {
+
+
+
+            var app = new Vue({
+                el: '#app',
+                data: {
+
+                },
+                methods: {
+
+
+
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

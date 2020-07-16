@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <link rel="stylesheet" href="../../../commonUi/aui/css/aui.css">
+    <style>
+        html,
+        body {
+            font-family: PingFang SC;
+            font-weight: 500;
+            height: 100%;
+            background-color: #fff;
+        }
+
+        .top {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-right: 34px;
+        }
+
+        .t_rt {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .t_rt h2 {
+            font-size: 18px;
+            color: rgba(0, 0, 0, 1);
+        }
+
+        .t_rt p {
+            font-size: 15px;
+            font-weight: 400;
+            color: rgba(51, 51, 51, 1);
+        }
+        /*//nav*/
+
+        .nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .nav_item {
+            position: relative;
+            width: 33.3%;
+        }
+
+        .lf_line:after {
+            position: absolute;
+            content: '';
+            width: 1px;
+            height: 45px;
+            background: rgba(181, 181, 181, 1);
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .title {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .circle {
+            width: 15px;
+            height: 15px;
+            background: rgba(238, 238, 238, 1);
+            border: 2px solid rgba(255, 0, 0, 1);
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .nav_item:nth-child(2) .circle {
+            border: 2px solid #009944;
+        }
+
+        .nav_item:last-child .circle {
+            border: 2px solid #B5B5B5
+        }
+        /*//show*/
+
+        .show {
+            display: flex;
+            justify-content: space-between;
+            ;
+            align-items: center;
+            padding: 10px 20px;
+            border-top: 1px solid #EEEEEE;
+            border-bottom: 1px solid #EEEEEE;
+            margin-bottom: 10px;
+        }
+
+        .show .rt ,.show .lf{
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .notifce{
+          width: 13px;
+          height: 16px;
+        }
+        /*meau_box*/
+
+        .meau_box {
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            align-content: center;
+        }
+
+        .meau_item {
+            width: 25%;
+            height: 90px;
+            border-radius: 50%;
+            /*background:rgba(5,143,253,0.2);*/
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .meau_item img {
+            width:25px;
+            height: 25px;
+            margin-bottom: 10px;
+        }
+
+        .meau_item p {
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(51, 51, 51, 1);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="top">
+            <img src="../../../image/logo.png" alt="" class="logo">
+            <div class="t_rt">
+                <h2>龙湖紫都</h2>
+                <p>塔机总数:&nbsp;<span>5</span></p>
+            </div>
+        </div>
+        <ul class="nav ">
+            <li class="nav_item lf_line">
+                <div class="title">
+                    <div class="circle"></div>
+                    <span>异常</span>
+                </div>
+                <p>2</p>
+            </li>
+            <li class="nav_item lf_line">
+                <div class="title">
+                    <div class="circle"></div>
+                    <span>异常</span>
+                </div>
+                <p>2</p>
+            </li>
+            <li class="nav_item ">
+                <div class="title">
+                    <div class="circle"></div>
+                    <span>异常</span>
+                </div>
+                <p>2</p>
+            </li>
+        </ul>
+        <div class="show">
+            <div class="lf">
+                <img  class="notifce" src="../../../image/towercrane/ling.png" alt="">&nbsp;&nbsp;
+                <span>最近24小时:</span>
+            </div>
+            <div class="rt">
+                <p>预警<span>2</span>次</p>&nbsp;&nbsp;
+                <p>报警<span>2</span>次</p>
+            </div>
+        </div>
+        <ul class="meau_box">
+
+            <li class="meau_item">
+                <img src="../../../image/towercrane/video.png" alt="">
+                <p>视频监控</p>
+            </li>
+            <li class="meau_item" @click="tower_dataFn()">
+                <img src="../../../image/towercrane/yx.png" alt="">
+                <p>运行监控</p>
+            </li>
+            <li class="meau_item" @click="dailymanagementFn()">
+                <img src="../../../image/towercrane/rcgl.png" alt="">
+                <p>日常管理</p>
+            </li>
+            <li class="meau_item" @click="applicationforrepairFn()">
+                <img src="../../../image/towercrane/bx.png" alt="">
+                <p>故障报修</p>
+            </li>
+            <li class="meau_item" @click="maintainFn">
+                <img src="../../../image/towercrane/bf.png" alt="">
+                <p>预约保养</p>
+            </li>
+            <li class="meau_item">
+                <img src="../../../image/towercrane/tj_2.png" alt="">
+                <p>报警统计</p>
+            </li>
+            <li class="meau_item">
+                <img src="../../../image/towercrane/tj_1.png" alt="">
+                <p>作业统计</p>
+            </li>
+            <li class="meau_item">
+                <img src="../../../image/towercrane/zjgz.png" alt="">
+                <p>自检故障</p>
+            </li>
+
+
+
+        </ul>
+
+    </div>
+
+    <script type="text/javascript" src="../../../script/api.js"></script>
+    <script src="../../../script/sha1.js"></script>
+    <script src="../../../script/common.js"></script>
+    <script type="text/javascript" src="../../../script/vue.js"></script>
+    <script>
+        apiready = function() {
+
+
+
+            var app = new Vue({
+                el: '#app',
+                data: {
+
+                },
+                methods: {
+                    //运行
+                    tower_dataFn:function(){
+                         api.openWin({
+                            name: 'tower_data',
+                            url: './tower_data.html',
+                            pageParam: {
+                            }
+                        });
+
+                    },
+                    //日常管理
+                    dailymanagementFn:function(){
+                        api.openWin({
+                            name: 'dailymanagement',
+                            url: './dailymanagement.html',
+                            pageParam: {
+                            }
+                        });
+
+                    },
+                    //保养预约
+                    maintainFn:function(){
+                        api.openWin({
+                            name: 'maintain',
+                            url: './maintain.html',
+                            pageParam: {
+                            }
+                        });
+
+                    },
+                    //保修预约
+                    applicationforrepairFn:function(){
+                        api.openWin({
+                            name: 'applicationforrepair',
+                            url: './applicationforrepair.html',
+                            pageParam: {
+                            }
+                        });
+
+                    },
+
+
+
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

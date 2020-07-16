@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title></title>
+    <!-- <link rel="stylesheet" type="text/css" href="../css/api.css"/> -->
+    <!-- <link rel="stylesheet" type="text/css" href="../css/style.css"/> -->
+    <link rel="stylesheet" href="../../../commonUi/aui/css/aui.css">
+    <style>
+    html,body{height: 100%}
+        .hover {
+            opacity: 0.6;
+        }
+
+        .header_title {
+            font-size: 18px;
+            font-weight: 500;
+            color: rgba(51, 51, 51, 1);
+        }
+
+        .flex_start {
+            justify-content: flex-start !important;
+        }
+
+
+        .triange_bg:before {
+            content: '';
+            height: 26px;
+            width: 26px;
+            background: url('../../../image/triangle.png') 0 0 no-repeat;
+            background-size: cover;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .color_999 {
+            color: #999;
+        }
+        .txt_t{color: #323233;}
+        .noData{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height:100vh;
+        }
+        .noData img{
+            width: 100px;
+            height:100px;
+        }
+        .aui-content .aui-list-item-inner .txt_t_r{
+            font-size: 14px;
+            color: #B4B4B4;
+        }
+        .aui-content .aui-list-item-inner .txt_b{
+            color: #7E7E80;
+        }
+        .w_80{width: 70%}
+        .footer{
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 45px;
+            line-height: 45px;
+            background-color: #fff;
+        }
+        .footer .item{
+            font-size: 14px;
+            color: #323233;
+            line-height: 14px;
+        }
+        .txt_b_l{color: #7E7E80;font-size: 14px;}
+        #app{height: 100%}
+        .md_50{margin-bottom: 50px;}
+    </style>
+</head>
+
+<body>
+    <div class="aui-content aui-margin-b-15" style="margin-top:5px;"  id="app">
+        <div class="aui-card-list-content" v-if="taskListinfo.length">
+            <ul class="aui-list aui-media-list md_50">
+                <li class="aui-list-item aui-list-item-middle" v-for="(items,index) in taskListinfo" tapmode @click="openDetailFn(items)">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner ">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title aui-font-size-16 txt_t aui-ellipsis-1 w_70"  v-text="items.title" ></div>
+                                <div class="aui-list-item-right txt_t_r" v-text="items.time">08:00</div>
+                            </div>
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title aui-font-size-14 aui-ellipsis-1 w_70 txt_b_l" v-text="items.content"></div>
+                                <div class="aui-list-item-right txt_b" v-text="items.stateName">08:00</div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="noData" v-else>
+            <img src="../../../image/noData.png" alt="">
+            <p>没有相关数据~</p>
+        </div>
+
+        <div class="footer">
+            <div class="item" tapmode @click="openActionTypeFn()" v-cloak>{{degreeName?degreeName:'类型不限'}} &nbsp;<i class="aui-iconfont aui-icon-top"></i></div>
+            <div class="item" tapmode @click="openActionStateFn()" v-cloak >{{stateName?stateName:'状态不限' }} &nbsp; <i class="aui-iconfont aui-icon-top"></i></div>
+
+        </div>
+    </div>
+    <script src="../../../script/api.js"></script>
+    <script src="../../../script/sha1.js"></script>
+    <script src="../../../script/common.js"></script>
+    <script src="../../../script/vue.js"></script>
+    <script type="text/javascript">
+        apiready = function() {
+            //上拉加载
+            $app.uploding(
+                function(){
+                    vm.init(true)
+                }
+            )
+
+            //下拉刷新
+            $app.downrefresh(
+                function(){
+                    vm.init(false)
+                }
+            )
+            //监听任务新增提交刷新事件
+            api.addEventListener({
+                name: 'refsh_task_list_event'
+            }, function(ret, err){
+                if( ret ){
+                    vm.init(false)
+                }else{
+                     alert( JSON.stringify( err ) );
+                }
+            });
+            //监听派发给他人事件
+            api.addEventListener({
+                name: 'task_sendtome_event'
+            }, function(ret, err){
+                if( ret ){
+                    vm.urlType = 1;
+                    vm.init(false)
+                }else{
+                     alert( JSON.stringify( err ) );
+                }
+            });
+            //监听派发给我的事件
+            api.addEventListener({
+                name: 'task_Iassign_event'
+            }, function(ret, err){
+                if( ret ){
+                    vm.urlType = 2;
+                    vm.init(false)
+                }else{
+                     alert( JSON.stringify( err ) );
+                }
+            });
+
+
+            var vm = new Vue({
+                el:'#app',
+                data:{
+                    "urlType":'1',//判断我指派的还是指派给我的
+                    'currentPage':1,
+                    "stateName":'',//状态类型
+                    "degree":'',//类型
+                    "taskListinfo":[],//列表数据
+                    "degreeName":''//类型文本显示
+                },
+                methods:{
+                    //打开详情
+                    openDetailFn:function(item){
+
+                        api.openWin({
+                            name: 'task_detail',
+                            url: './task_detail.html',
+                            pageParam: {
+                                task_detail_info: item
+                            }
+                        });
+                    },
+                    //筛选类型
+                    openActionTypeFn:function(){
+                        var data = ['一般','紧急','特急','类型不限'];
+                        api.actionSheet({
+                            // title: '',
+                            cancelTitle: '取消',
+                            buttons: data
+                        }, function(ret, err){
+                            if( ret ){
+                                vm.degreeName = data[ret.buttonIndex-1];
+                                switch (vm.degreeName) {
+                                    case '一般':
+                                        vm.degree = '0';
+                                        break;
+                                    case '紧急':
+                                        vm.degree = '1';
+                                        break;
+                                    case '特急':
+                                        vm.degree = '2';
+                                        break;
+                                    case '类型不限':
+                                        vm.degree = ''
+                                        break;
+                                    default:
+
+                                }
+                                vm.init(false)
+                            }else{
+                                 alert( JSON.stringify( err ) );
+                            }
+                        });
+
+                    },
+                    //紧急状态
+                    openActionStateFn:function(){
+                        var data = ['待反馈','待验收','已完成','状态不限'];
+                        api.actionSheet({
+                            // title: '',
+                            cancelTitle: '取消',
+                            buttons: data
+                        }, function(ret, err){
+                            if( ret ){
+                                data[ret.buttonIndex-1] == '状态不限' ? vm.stateName = ''  : vm.stateName = data[ret.buttonIndex-1];
+                                console.log(vm.stateName);
+                                vm.init(false)
+
+                            }else{
+                                 alert( JSON.stringify( err ) );
+                            }
+                        });
+
+                    },
+                    //初始化列表 app查询派给我的任务列表
+                    init:function(isFlag){
+                        isFlag ? this.currentPage++ : this.currentPage=1;
+                        //urlType==1派给我的  ==2我指派的
+                        var url = this.urlType == 1?giveMeTaskList:arrangeTaskList;
+                        var params ={
+                            "userId": $api.getStorage('userId'),
+                            "projectId": $api.getStorage('enterpriseId'),
+                            "showCount": "2",
+                            "currentPage": this.currentPage,
+                            "degree": this.degree,
+                            "stateName": this.stateName,
+                            "queryStatus":''
+                        }
+                        console.log($api.jsonToStr(params));
+
+                        $app.post(
+                            true,
+                            url,
+                            params,
+                            function(ret){
+                                console.log($api.jsonToStr(ret));
+                                api.refreshHeaderLoadDone()
+                                if(isFlag){
+                                    if(ret.totalResult > vm.taskListinfo.length){
+                                        vm.taskListinfo = vm.taskListinfo.concat(ret.obj)
+                                    }
+                                }else{
+                                    vm.taskListinfo = ret.obj;
+                                }
+                            }
+                        )
+                    },
+                },
+                created:function(){
+                    this.init()
+                }
+            })
+
+        }
+    </script>
+</body>
+
+</html>

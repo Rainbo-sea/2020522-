@@ -1,0 +1,88 @@
+<widget id="A6017026983510" version="0.0.1">
+
+    <name>筑迹云</name>
+
+    <description>
+
+        Example For APICloud.
+
+    </description>
+
+    <author email="cqdjxxkj@126.com" href="http://www.apicloud.com">
+
+        Developer
+
+    </author>
+
+    <content src="./login.html"/>
+
+    <access origin="*"/>
+
+    <preference name="pageBounce" value="false"/>
+
+    <preference name="appBackground" value="#fff"/>
+
+    <preference name="windowBackground" value="#fff"/>
+
+    <preference name="frameBackgroundColor" value="#fff"/>
+
+    <preference name="hScrollBarEnabled" value="false"/>
+
+    <preference name="vScrollBarEnabled" value="false"/>
+
+    <preference name="autoLaunch" value="true"/>
+
+    <preference name="fullScreen" value="false"/>
+
+    <preference name="iOS7StatusBarAppearance" value="true"/>
+
+    <preference name="autoUpdate" value="true"/>
+
+    <preference name="smartUpdate" value="true"/>
+
+    <preference name="statusBarAppearance" value="true"/>
+
+    <permission name="readPhoneState"/>
+
+    <permission name="camera"/>
+
+    <permission name="record"/>
+
+    <permission name="fileSystem"/>
+
+    <permission name="internet"/>
+
+    <permission name="bootCompleted"/>
+
+    <permission name="hardware"/>
+
+    <preference name="softInputMode" value="resize"/>
+
+    <permission name="call"/>
+
+    <preference name="useWKWebView" value="true"/>
+
+    <feature name="ajpush">
+        <param name="app_key" value="1b7e75db85e20291947f87ee"/>
+        <param name="channel" value="843f1c7cdfc206c9488bc627"/>
+    </feature>
+
+    <preference name="urlScheme" value="grxby6"/>
+
+    <meta-data name="com.openinstall.APP_KEY" value="grxby6"/>
+
+    <feature name="bMap">
+        <param name="android_api_key" value="nHKcSl7E212Ft0604RGdyj5iNUr7x0dB"/>
+        <param name="ios_api_key" value="cb4Dd6I6bcEFImO4EvV4cRGmeCXzQ9KZ"/>
+    </feature>
+
+    <permission name="location"/>
+
+    <preference name="backgroundMode" value="location"/>
+
+    <feature name="twoBaiDuOcr">
+        <param name="apiKey" value="xlmrOGTGjTHlGRrnbCue8AUH"/>
+        <param name="secretKey" value="mKZlsc0770bR7dkjtFF0cpkaRyfIBAAQ"/>
+   </feature>
+
+</widget>
