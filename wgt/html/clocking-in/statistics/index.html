@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title></title>
+    <!-- <link rel="stylesheet" type="text/css" href="../css/api.css"/> -->
+    <!-- <link rel="stylesheet" type="text/css" href="../css/style.css"/> -->
+    <link rel="stylesheet" href="../../../../commonUi/aui/css/aui.css">
+    <style>
+        html,
+        body {
+            height: 100%;
+            background: #F5F5F5;
+        }
+
+        .height {
+            height: 100%;
+            width: 100%;
+        }
+
+        .aui-bar-nav .aui-btn .aui-iconfont {
+            color: #0590FF
+        }
+
+        .color_3 {
+            color: #323233 !important;
+        }
+
+        .aui-bar .aui-bar-btn-item {
+            color: #0590FF
+        }
+
+        .aui-bar-btn .aui-active {
+            color: #fff
+        }
+
+        .pb_10 {
+            padding-bottom: 10px;
+        }
+
+        .bg_f {
+            background: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .content {
+            margin-top: 2.3rem;
+            width: 100%;
+            background: #ffffff;
+        }
+
+        .main-div {
+            width: 100%;
+            background-color: #fff;
+            overflow: hidden;
+            height: 20rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="hight">
+        <header class="aui-bar aui-bar-nav bg_f header" id="header">
+            <a class="aui-pull-left aui-btn aui-btn-left" onclick="closeWin()">
+                <span class="aui-iconfont aui-icon-left"></span>
+            </a>
+            <div class="aui-title color_3">统计</div>
+            <div class="content">
+                <div class="aui-tab" id="tab">
+                    <div class="aui-tab-item aui-active" onclick="randomSwitchBtn(this)">日统计</div>
+                    <div class="aui-tab-item" onclick="randomSwitchBtn(this)">月统计</div>
+                    <div class="aui-tab-item" onclick="randomSwitchBtn(this)">我的</div>
+                </div>
+            </div>
+        </header>
+
+        <div id="main" class="main-div">
+
+        </div>
+    </div>
+
+    <script src="../../../../script/api.js"></script>
+    <script src="../../../../script/vue.js"></script>
+    <script src="../../../../script/aui-dialog.js"></script>
+    <script src="../../../../script/sha1.js"></script>
+    <script src="../../../../script/common.js"></script>
+    <script>
+        apiready = function () {
+            //侵入式导航栏
+            $api.fixStatusBar($api.dom('header'));
+            var offset = $api.offset($api.byId('header'));
+            var vm = new Vue({
+                el: '#app',
+                data: {
+                    dayStatistics: {}, //日统计打卡信息
+                    todayTime: $app.formDate(false, '-') || null,//默认今天
+                },
+                created: function () {
+                    //获取日常打卡信息
+                },
+                methods: {
+                    //获取日常打卡信息
+                    getDayList() {
+                        var that = this;
+                        $app.post(
+                            true,
+                            attendanceForDayListURL, {
+                            projectId: $api.getStorage('enterpriseId'),
+                            date: that.todayTime,
+                        }, function (ret) {
+                        })
+                    }
+                },
+            });
+        }
+        // 随意切换按钮
+        function randomSwitchBtn(tag) {
+            if (tag == $api.dom('.aui-tab-item.aui-active')) return;
+            var eHeaderLis = $api.domAll('.aui-tab-item'),
+                index = 0;
+            for (var i = 0, len = eHeaderLis.length; i < len; i++) {
+                if (tag == eHeaderLis[i]) {
+                    index = i;
+                } else {
+                    $api.removeCls(eHeaderLis[i], 'aui-active');
+                }
+            }
+            $api.addCls(eHeaderLis[index], 'aui-active');
+        }
+    </script>
+    <script>
+    </script>
+</body>
+
+</html>

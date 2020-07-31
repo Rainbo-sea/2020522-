@@ -9,7 +9,7 @@
 //problemlocation_storage 质量问题部位缓存
 
 var dialogBox, openinstall;
-apiready = function() {
+apiready = function () {
 
     dialogBox = api.require('dialogBox');
 
@@ -17,24 +17,24 @@ apiready = function() {
     openinstall = api.require('openinstall');
     api.addEventListener({
         name: 'appintent'
-    }, function(ret, err) {
+    }, function (ret, err) {
         openinstall.getWakeup({
             "uri": ret
-        }, function(ret, err) {
+        }, function (ret, err) {
             installFn();
             reportRegisterFn()
         });
     });
 
     //个性安装
-    function installFn(){
+    function installFn() {
         openinstall.getInstall({
-           timeout:10
-        },function(ret, err){
+            timeout: 10
+        }, function (ret, err) {
         });
     }
     //上报注册量
-    function reportRegisterFn(){
+    function reportRegisterFn() {
         openinstall.reportRegister();
     }
 
@@ -43,7 +43,7 @@ apiready = function() {
     //监听网络连接
     api.addEventListener({
         name: 'online'
-    }, function(ret, err) {
+    }, function (ret, err) {
         api.toast({
             msg: '网络已连接',
             duration: 2000,
@@ -56,7 +56,7 @@ apiready = function() {
     //监听是否同意协议
     api.addEventListener({
         name: 'clickRole'
-    }, function(ret, err) {
+    }, function (ret, err) {
         if (ret) {
             console.log($api.jsonToStr(ret));
             if (ret.value.roleFn == 1) {
@@ -69,8 +69,8 @@ apiready = function() {
                 api.alert({
                     title: '提示',
                     msg: '退出app',
-                }, function(ret, err){
-                    if( ret ){
+                }, function (ret, err) {
+                    if (ret) {
                         api.closeWidget({
                             id: 'A6017026983510', //你的APPid
                             retData: {
@@ -83,36 +83,36 @@ apiready = function() {
                             },
                             silent: true
                         });
-                    }else{
+                    } else {
                         //  alert( JSON.stringify( err ) );
                     }
                 });
 
 
             }
-        } else {}
+        } else { }
     });
 
 
     // 监听网络断开
     api.addEventListener({
-            name: 'offline'
-        }, function(ret, err) {
-            api.toast({
-                msg: '网络已断开',
-                duration: 2000,
-                location: 'bottom'
-            });
-            api.openWin({
-                name: 'neteworke',
-                url: './noteworke.html',
-                pageParam: {}
-            });
-        })
-        //监听修改密码
+        name: 'offline'
+    }, function (ret, err) {
+        api.toast({
+            msg: '网络已断开',
+            duration: 2000,
+            location: 'bottom'
+        });
+        api.openWin({
+            name: 'neteworke',
+            url: './noteworke.html',
+            pageParam: {}
+        });
+    })
+    //监听修改密码
     api.addEventListener({
         name: 'loginPhone'
-    }, function(ret, err) {
+    }, function (ret, err) {
         if (ret) {
             vm.phone = $api.getStorage('loginPhone');
             vm.passWord = ''
@@ -126,14 +126,14 @@ apiready = function() {
         },
         methods: {
             //是否弹出协议
-            layer: function() {
+            layer: function () {
                 // api.removePrefs({
                 //     key: 'zhuji_version'
                 // });
 
                 api.getPrefs({
                     key: 'zhuji_version'
-                }, function(ret, err) {
+                }, function (ret, err) {
                     if ((!ret.value) || (ret.value != api.version)) {
                         vm.contentShow()
                     } else {
@@ -142,7 +142,7 @@ apiready = function() {
                 });
             },
             //弹窗
-            contentShow: function() {
+            contentShow: function () {
 
                 api.openFrame({
                     name: 'layerrole',
@@ -157,7 +157,7 @@ apiready = function() {
 
 
             //资料文件预加载
-            fileLoad: function() {
+            fileLoad: function () {
                 var params = {
                     "prefix": ''
                 }
@@ -166,7 +166,7 @@ apiready = function() {
                     '加载中...',
                     getAllObjectsByPrefix,
                     params,
-                    function(ret) {
+                    function (ret) {
                         if (ret.obj.length) {
 
                             api.setPrefs({
@@ -183,7 +183,7 @@ apiready = function() {
                     }
                 )
             },
-            login: function() {
+            login: function () {
                 //清除质量部位缓存
                 api.removePrefs({
                     key: 'problemlocation_storage'
@@ -241,9 +241,9 @@ apiready = function() {
                         phone: this.phone,
                         passWord: this.passWord
                     },
-                    function(loginRet, err) {
+                    function (loginRet, err) {
                         console.log($api.jsonToStr(loginRet));
-                        if(loginRet){
+                        if (loginRet) {
                             api.toast({
                                 msg: loginRet.msg,
                                 duration: 2000,
@@ -257,11 +257,11 @@ apiready = function() {
 
                             var ajpush = api.require('ajpush');
                             //极光初始化
-                            ajpush.init(function(ret) {
-                                if (ret && ret.status) {}
+                            ajpush.init(function (ret) {
+                                if (ret && ret.status) { }
                             });
                             ajpush.setListener(
-                                function(ret) {
+                                function (ret) {
 
                                 }
                             );
@@ -270,18 +270,18 @@ apiready = function() {
                                 alias: loginRet.obj[0].userId,
                                 tags: []
                             };
-                            ajpush.bindAliasAndTags(param, function(ret) {});
+                            ajpush.bindAliasAndTags(param, function (ret) { });
                             // android极光推送模块会往设备状态栏上发送通知
                             api.addEventListener({
                                 name: 'appintent'
-                            }, function(ret, err) {
-                                if (ret && ret.appParam.ajpush) {}
+                            }, function (ret, err) {
+                                if (ret && ret.appParam.ajpush) { }
                             })
 
                             // ios应用在前台运行，通过setListener方法监听到
                             api.addEventListener({
                                 name: 'noticeclicked'
-                            }, function(ret, err) {
+                            }, function (ret, err) {
                                 if (ret && ret.value) {
                                     ajpush.setBadge({
                                         badge: 0
@@ -290,17 +290,17 @@ apiready = function() {
                             })
 
                             if (loginRet.obj.length > 1) { //判断是否有多个身份
-                                var typeName = loginRet.obj.map(function(item) {
+                                var typeName = loginRet.obj.map(function (item) {
                                     return item.typeName
                                 })
-                                var selectProjectType = loginRet.obj.map(function(item) {
+                                var selectProjectType = loginRet.obj.map(function (item) {
                                     return item.type
                                 })
                                 api.actionSheet({
                                     title: '请选择身份',
                                     cancelTitle: '取消',
                                     buttons: typeName
-                                }, function(ret, err) {
+                                }, function (ret, err) {
                                     if (ret) {
                                         var btnIndex = ret.buttonIndex - 1;
                                         if (btnIndex >= typeName.length) {
@@ -339,7 +339,7 @@ apiready = function() {
 
             },
             //验证输入是否是11位且为数字
-            regLength: function(val) {
+            regLength: function (val) {
                 var reg = /^\d{11}$/;
                 if (!reg.test(val)) {
                     api.toast({
@@ -351,7 +351,7 @@ apiready = function() {
                     return false;
                 }
             },
-            toggleInput: function(id) {
+            toggleInput: function (id) {
                 var el = $api.byId('toggleInput');
                 var prev = $api.next(el);
 
@@ -366,19 +366,19 @@ apiready = function() {
                 }
             },
             //清除账号
-            clearInput: function() {
+            clearInput: function () {
                 this.phone = '';
                 this.passWord = ''
             },
 
 
         },
-        created: function() {
+        created: function () {
             this.isLoginFlag;
 
         },
         computed: {
-            isLoginFlag: function() {
+            isLoginFlag: function () {
                 if (this.phone && this.passWord) {
                     $api.removeAttr($api.byId('loginBtn'), 'disabled');
                     return true;
@@ -388,7 +388,7 @@ apiready = function() {
                 }
             }
         },
-        mounted: function() {
+        mounted: function () {
             this.layer()
         },
 
@@ -396,7 +396,7 @@ apiready = function() {
 
     api.addEventListener({
         name: 'keyback'
-    }, function(ret, err) {
+    }, function (ret, err) {
         api.closeWidget({
             id: 'A6017026983510',
             retData: {
@@ -425,8 +425,9 @@ apiready = function() {
         $app.post(
             true,
             oneLoginUserInfoURL,
-            { userId: $api.getStorage('userId')},
-            function(ret, err) {
+            { userId: $api.getStorage('userId') },
+            function (ret, err) {
+                console.log("-----", $api.jsonToStr(ret))
                 if (ret.status == 1) {
                     //预加载文件
                     vm.fileLoad();
@@ -450,7 +451,7 @@ apiready = function() {
                             api.alert({
                                 title: '提示',
                                 msg: listRetName + '已过期，请尽快续期',
-                            }, function(ret, err) {});
+                            }, function (ret, err) { });
                         } else {
                             if (loginRet.obj[selectIndex].type == 1) { //判断是企业(1)还是项目(2)
                                 var listId = ret.obj.enterprises[0].enterpriseId; //企业列表
@@ -491,7 +492,7 @@ apiready = function() {
                         api.alert({
                             title: '温馨提示',
                             msg: '你已离职,不能登录',
-                        }, function(ret, err) {
+                        }, function (ret, err) {
 
                         });
 
@@ -559,23 +560,23 @@ apiready = function() {
                                 api.alert({
                                     title: '温馨提示',
                                     msg: ret.obj.msg,
-                                }, function(ret, err) {});
+                                }, function (ret, err) { });
                                 return false;
                             }
                             var enterpriseName = [];
                             if (loginRet.obj[selectIndex].type == 1) { //(1)企业
-                                ret.obj.enterprises.forEach(function(item) {
+                                ret.obj.enterprises.forEach(function (item) {
                                     enterpriseName.push(item.enterpriseName)
                                 });
                             } else {
-                                ret.obj.projects.forEach(function(item) {
+                                ret.obj.projects.forEach(function (item) {
                                     enterpriseName.push(item.projectName)
                                 });
                             }
                             api.actionSheet({
                                 title: '选择单位/项目',
                                 buttons: enterpriseName
-                            }, function(ret, err) {
+                            }, function (ret, err) {
                                 if (ret) {
                                     var index = ret.buttonIndex - 1;
                                     if (index >= enterpriseName.length) {
@@ -592,7 +593,7 @@ apiready = function() {
                                         api.alert({
                                             title: '提示',
                                             msg: listRetName + '单位名已过期，请尽快续期',
-                                        }, function(ret, err) {});
+                                        }, function (ret, err) { });
                                     } else {
                                         if (loginRet.obj[selectIndex].type == 1) {
                                             var listRetName = listRet[index].enterpriseName;
@@ -669,8 +670,8 @@ function openagreement(type) {
 //login流程
 
 function openIndex() {
-    if (api.getGlobalData({  key: 'token'  })) {
-        if (api.getGlobalData({  key: 'selectionType'}) == '1') {
+    if (api.getGlobalData({ key: 'token' })) {
+        if (api.getGlobalData({ key: 'selectionType' }) == '1') {
             api.openWin({
                 name: 'Index',
                 url: './index.html',

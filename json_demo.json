@@ -1,45 +1,163 @@
-{
-    "idcardFront": "/userfiles//2020/07/08/62349b990f56b54e2c0355294dbaf8d0.jpg",
-    "idcardBack": "/userfiles//2020/07/08/64d09531e1414fb4b44dc6b670929dea.jpg",
-    "name": "邬灿",
-    "idcardNo": "500231199012124882",
-    "sex": "女",
-    "nation": "汉",
-    "address": "重庆市垫江县长龙乡高桥村1组132号",
-    "birthday": "1990-12-12",
-    "mobile": "12",
-    "entranceDay": "2020-07-08",
-    "education": "2",
-    "politic": "5",
-    "marital": "1",
-    "category": "0",
-    "worktype": "",
-    "teamId": "",
-    "hours": "",
-    "isleader": "",
-    "unit": "单位",
-    "station": "11",
-    "photo": "/userfiles//2020/07/08/46d6c56086ad15acdb880aeb9be2c6e0.jpg",
-    "emergencyPerson": "",
-    "emergencyPhone": "",
-    "exitLetter": "",
-    "salaryAccount": "",
-    "trainAgency": "",
-    "trainContent": "",
-    "trainPhoto": "",
-    "abilityName": "",
-    "abilityNo": "",
-    "abilityType": "",
-    "abilityLevel": "",
-    "abilityIssueDay": "",
-    "abilityValidDay": "",
-    "abilityPhoto": "",
-    "contractNo": "",
-    "contractStartDay": "",
-    "contractEndDay": "",
-    "contractType": "",
-    "contractPhoto": "",
-    "status": "0",
-    "projectId": "e76a19cf18f2498c99f66017c05f07d6",
-    "tp_personid": ""
-}
+[
+    {
+        "restStartDay": "2018-10-25",
+        "startWorkTime": "08:55",
+        "roles": [
+            {
+                "roleId": "0dc36253015545c7896e866b1ef31ffa",
+                "position": "质量经理",
+                "roleType": "1"
+            },
+            {
+                "roleId": "1c2e6ea5243545e9af105cc1e8d6428a",
+                "position": "材料员",
+                "roleType": "1"
+            },
+            {
+                "roleId": "cb856722ab97494aa272fc1203a49ce7",
+                "position": "安全负责人",
+                "roleType": "1"
+            },
+            {
+                "roleId": "cda8175271ce44f59bf2d3e356480340",
+                "position": "项目经理",
+                "roleType": "1"
+            }
+        ],
+        "holidaySet": "1",
+        "endWorkTime": "18:00",
+        "attendanceAddress": "重庆市渝北区松牌路519号",
+        "type": "0",
+        "attendanceWifi": "TP-LINK_C105",
+        "mapY": "106.52396041836344",
+        "mapX": "29.603878458933995",
+        "macAddress": "b0:95:8e:53:c1:5",
+        "rulesName": "默认考勤组",
+        "mapC": "30",
+        "attendanceRoleIds": "0dc36253015545c7896e866b1ef31ffa,1c2e6ea5243545e9af105cc1e8d6428a,cb856722ab97494aa272fc1203a49ce7,cda8175271ce44f59bf2d3e356480340",
+        "attendanceRoleName": "质量经理,材料员,安全负责人,项目经理",
+        "rulesId": "4252c1f399f842c6beefd5c0ee66527a",
+        "restEndDay": "2018-10-25",
+        "projectId": "e76a19cf18f2498c99f66017c05f07d6",
+        "attendanceWays": "1"
+    },
+    {
+        "restStartDay": "",
+        "startWorkTime": "18:10",
+        "roles": [
+            {
+                "roleId": "d46dc8570dd147309c04d1de0d931019",
+                "position": "资料员",
+                "roleType": "1"
+            }
+        ],
+        "holidaySet": "1",
+        "endWorkTime": "18:10",
+        "attendanceAddress": "重庆市渝北区松牌路519号",
+        "type": "1",
+        "attendanceWifi": "TP-LINK_C105,TP-LINK_5G_C105",
+        "mapY": "106.52396041836344",
+        "mapX": "29.603878458933995",
+        "macAddress": "b0:95:8e:53:c1:05,b0:95:8e:53:c1:07",
+        "rulesName": "方法",
+        "mapC": "30",
+        "attendanceRoleIds": "d46dc8570dd147309c04d1de0d931019",
+        "attendanceRoleName": "资料员",
+        "rulesId": "96fdff0852d3472e8e891157e45b43e6",
+        "restEndDay": "",
+        "projectId": "e76a19cf18f2498c99f66017c05f07d6",
+        "attendanceWays": "1"
+    },
+    {
+        "restStartDay": "",
+        "startWorkTime": "08:00",
+        "roles": [
+            {
+                "roleId": "94e3c7eae5a145a8a2ed94b6b0c0c3d6",
+                "position": "测试",
+                "roleType": "1"
+            }
+        ],
+        "holidaySet": "1",
+        "endWorkTime": "17:00",
+        "attendanceAddress": "重庆市渝北区松牌路519号",
+        "type": "1",
+        "attendanceWifi": "TP-LINK_C105",
+        "mapY": "106.52396041836344",
+        "mapX": "29.603878458933995",
+        "macAddress": "b0:95:8e:53:c1:05",
+        "rulesName": "地址测试",
+        "mapC": "30",
+        "attendanceRoleIds": "94e3c7eae5a145a8a2ed94b6b0c0c3d6",
+        "attendanceRoleName": "测试",
+        "rulesId": "28e115f7a1cd45edb74a7b0a3e238278",
+        "restEndDay": "",
+        "projectId": "e76a19cf18f2498c99f66017c05f07d6",
+        "attendanceWays": "1"
+    },
+    {
+        "restStartDay": "",
+        "startWorkTime": "15:00",
+        "roles": [
+            {
+                "roleId": "23772d00bcf04ba9ba869a4da9386fc4",
+                "position": "生产经理",
+                "roleType": "1"
+            },
+            {
+                "roleId": "6f066c43198b478b96b7a78013208c5d",
+                "position": "施工员",
+                "roleType": "1"
+            }
+        ],
+        "holidaySet": "1",
+        "endWorkTime": "18:32",
+        "attendanceAddress": "重庆市渝北区松牌路519号",
+        "type": "1",
+        "attendanceWifi": "TP-LINK_5G_C105,TP-LINK_C105,TP-LINK_5G_C105",
+        "mapY": "106.52396041836344",
+        "mapX": "29.603878458933995",
+        "macAddress": "b0:95:8e:53:c1:07,b0:95:8e:53:c1:5,b0:95:8e:53:c1:7",
+        "rulesName": "Ios新增",
+        "mapC": "30",
+        "attendanceRoleIds": "23772d00bcf04ba9ba869a4da9386fc4,6f066c43198b478b96b7a78013208c5d",
+        "attendanceRoleName": "生产经理,施工员",
+        "rulesId": "e51df1add6f8499f989d959f76225913",
+        "restEndDay": "",
+        "projectId": "e76a19cf18f2498c99f66017c05f07d6",
+        "attendanceWays": "1"
+    },
+    {
+        "restStartDay": "",
+        "createUserId": "b0f5e334201b41b7af6e9a5e270c3afb",
+        "startWorkTime": "18:00",
+        "roles": [
+            {
+                "roleId": "2bc656755a2743bba4c52bbe23d8f781",
+                "position": "电工",
+                "roleType": "1"
+            },
+            {
+                "roleId": "87504bf84da3491789dbf74f0af173ed",
+                "position": "技术负责",
+                "roleType": "1"
+            }
+        ],
+        "holidaySet": "1",
+        "endWorkTime": "19:55",
+        "attendanceAddress": "重庆市渝北区松牌路519号",
+        "type": "1",
+        "attendanceWifi": "TP-LINK_C105,TP-LINK_5G_C105,xwkj,TP-LINK_5G_C105,TP-LINK_C105",
+        "mapY": "106.52396041836344",
+        "mapX": "29.603878458933995",
+        "macAddress": "b0:95:8e:53:c1:05,b0:95:8e:53:c1:07,34:96:72:6a:bd:ef,b0:95:8e:53:c1:7,b0:95:8e:53:c1:5",
+        "rulesName": "星期一打卡",
+        "mapC": "30",
+        "attendanceRoleIds": "2bc656755a2743bba4c52bbe23d8f781,87504bf84da3491789dbf74f0af173ed",
+        "attendanceRoleName": "电工,技术负责",
+        "rulesId": "f7a7315dbd134df095dae7720f93d935",
+        "restEndDay": "",
+        "projectId": "e76a19cf18f2498c99f66017c05f07d6",
+        "attendanceWays": "1"
+    }
+]

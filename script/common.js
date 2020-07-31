@@ -432,8 +432,27 @@ const getPersonAttendanceCount = BASE_URL + '/app/realName/getPersonAttendanceCo
 
 const getPersonAmrsAndGcrs = BASE_URL + '/app/realName/getPersonAmrsAndGcrs' //获取个人考勤统计信息
 
-const updatePersonStatus = BASE_URL + '/app/realName/updatePersonStatus' // 退场结算
+const updatePersonStatus = BASE_URL + '/app/realName/updatePersonStatus' // 退场结算c
 
+//考勤模块
+
+const getAttendanceRecordURL = BASE_URL + '/app/appAttendanceRecord/getAttendanceRecord' // 用户打卡页面详情（包括第一次进入打卡页面）
+
+const getProjectLoginUserInfoURL = BASE_URL + '/app/appAttendanceRecord/getAttendanceRecord' // 获取项目登录用户信息（新）
+
+const attendanceRuleListURL = BASE_URL + '/app/attendance/attendanceRuleList' // 获取考勤规则列表
+
+const delAttendanceRuleURL = BASE_URL + '/app/attendance/delAttendanceRule' // 删除考勤规则列表
+
+const attendanceForMonthURL = BASE_URL + '/app/attendance/attendanceForMonth' // 月统计:获取项目所有人考勤统计
+
+const attendanceRuleDetailURL = BASE_URL + '/app/attendance/attendanceRuleDetail' // 考勤规则详情
+
+const punchClocklURL = BASE_URL + '/app/appAttendanceRecord/punchClock' // 上下班考勤/更新打卡
+
+const applyListInfoURL = BASE_URL + '/app/appAttendanceRecord/applyListInfo' //申请记录列表
+
+const attendanceForDayListURL = BASE_URL + '/app/attendance/attendanceForDayList' //日统计打卡详情列表
 
 function ajaxGet(ismessg, wonrname, interfaceurl, jsonDate, fn) { //网络请求
     if (ismessg) {
@@ -486,7 +505,7 @@ function ajaxGet(ismessg, wonrname, interfaceurl, jsonDate, fn) { //网络请求
                     setTimeout(function () {
                         api.closeWin();
                     }, 100)
-                } else {}
+                } else { }
             });
             return
 
@@ -557,7 +576,7 @@ function ajaxPost(ismessg, wonrname, interfaceurl, jsonDate, fn) { //网络请�
                     setTimeout(function () {
                         api.closeWin();
                     }, 100)
-                } else {}
+                } else { }
             });
             return
 
@@ -641,7 +660,7 @@ function ajaxFile(ismessg, wonrname, interfaceurl, dataValue, dataFile, fn) { //
                     setTimeout(function () {
                         api.closeWin();
                     }, 100)
-                } else {}
+                } else { }
             });
             return
 
@@ -722,7 +741,7 @@ function ajaxFile(ismessg, wonrname, interfaceurl, dataValue, dataFile, fn) { //
                         setTimeout(function () {
                             api.closeWin();
                         }, 100)
-                    } else {}
+                    } else { }
                 });
                 return
 
@@ -883,14 +902,14 @@ function ajaxFile(ismessg, wonrname, interfaceurl, dataValue, dataFile, fn) { //
     };
     //数据大小转换
     o.fromCatcheSize = function (size, length) {
-            if ((size / 1024) < 500) {
-                return ((size / 1024).toFixed(length)) + 'k'
-            } else if (size / (1024 * 1024) < 100) {
-                return ((size / (1024 * 1024)).toFixed(length)) + 'M'
-            } else {
-                return ((size / (1024 * 1024 * 1024)).toFixed(length)) + 'G'
-            }
-        },
+        if ((size / 1024) < 500) {
+            return ((size / 1024).toFixed(length)) + 'k'
+        } else if (size / (1024 * 1024) < 100) {
+            return ((size / (1024 * 1024)).toFixed(length)) + 'M'
+        } else {
+            return ((size / (1024 * 1024 * 1024)).toFixed(length)) + 'G'
+        }
+    },
         //格式化时间
         /*
             date,（可选参数，传false为当前时间）
@@ -998,6 +1017,12 @@ function ajaxFile(ismessg, wonrname, interfaceurl, dataValue, dataFile, fn) { //
             })
         }
         return att;
+    }
+    //返回指定长度字符串，超出部分用...代替
+    o.strNum = function (txt, num) {
+        var str = txt;
+        str = str.substr(0, num) + '...';
+        return str;
     }
 
 

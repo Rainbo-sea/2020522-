@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,13 @@
     <title>Document</title>
     <link rel="stylesheet" href="../../commonUi/aui/css/aui.css">
     <style>
-    html,body{height:100%;background-color: #fff;}
-        .container{
+        html,
+        body {
+            height: 100%;
+            background-color: #fff;
+        }
+
+        .container {
             margin-top: 10px;
             background-color: #fff;
             padding: 6px 15px;
@@ -16,77 +22,99 @@
             height: 100%;
             background-color: #fff
         }
-        .container img{
+
+        .container img {
             width: 100%
         }
-        .aui-tab-item{
-            color:#999;
+
+        .aui-tab-item {
+            color: #999;
         }
+
         .aui-tab-item.aui-active {
             color: #058FFD;
             border-bottom: 2px solid #058FFD;
         }
-        .tab_box{
+
+        .tab_box {
             margin-top: 22px;
-            min-height:300px;
+            min-height: 300px;
         }
-        .tab_item{
-            float:left;
-            width:calc(100%/4);
+
+        .tab_item {
+            float: left;
+            width: calc(100%/4);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin-bottom:20px;
+            margin-bottom: 20px;
         }
-        .tab_top{
-            margin-bottom:25px;
+
+        .tab_top {
+            margin-bottom: 25px;
             width: 100%
         }
-        .tab_top div{margin-right: 10px;}
+
+        .tab_top div {
+            margin-right: 10px;
+        }
+
         .tab_show img {
             width: 30px;
-            height:30px;
+            height: 30px;
             margin-bottom: 5px;
         }
-        .aui-tab-item{width:80px;font-size: 13px;}
-        .tab_show{
+
+        .aui-tab-item {
+            width: 80px;
+            font-size: 13px;
+        }
+
+        .tab_show {
             background-color: #fff;
         }
-        .tab_show p{
-            height:15px;
+
+        .tab_show p {
+            height: 15px;
             line-height: 15px;
-            font-size:13px;
-            font-weight:400;
-            color:rgba(51,51,51,1);
+            font-size: 13px;
+            font-weight: 400;
+            color: rgba(51, 51, 51, 1);
         }
-        .aui-clearfix:after{
-            display:table;
+
+        .aui-clearfix:after {
+            display: table;
             content: '';
-            height:0;
+            height: 0;
             width: 0;
-            clear:both;
+            clear: both;
         }
-        .noData{
+
+        .noData {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height:200px;
+            height: 200px;
         }
-        .noData img{
+
+        .noData img {
             width: 100px;
-            height:100px;
+            height: 100px;
         }
+
         /*#058FFD*/
     </style>
 </head>
+
 <body>
     <div class="container aui-clearfix" id="app">
         <img src="../../image/project/banner.png" alt="">
         <div class="tab_box  aui-clearfix" id="sildeBox">
             <div class="aui-tab tab_top" id="tab">
-                <div class="aui-tab-item"  :class="{'aui-active':index == currenIndex}" v-for="(item,index) in projectMenu" @click="toggletabTop(item,index)">{{item.menu_name}}</div>
+                <div class="aui-tab-item" :class="{'aui-active':index == currenIndex}"
+                    v-for="(item,index) in projectMenu" @click="toggletabTop(item,index)">{{item.menu_name}}</div>
                 <!-- <div class="aui-tab-item">外部协同</div>
                 <div class="aui-tab-item">智慧物联</div> -->
                 <!-- v-if="item.menu_order == 4 || item.menu_order == 3 || item.menu_order == 2 || item.menu_order == 1" -->
@@ -112,225 +140,226 @@
     <script src="../../script/vue.js"></script>
     <script src="../../script/touchFn.js"></script>
     <script type="text/javascript">
-        apiready = function(){
+        apiready = function () {
 
             api.addEventListener({
                 name: 'currenProject'
-            }, function(ret, err){
-                if( ret ){
+            }, function (ret, err) {
+                if (ret) {
                     vm.init()
                 }
             });
             api.addEventListener({
                 name: 'projectInit1'
-            }, function(ret, err){
-                if( ret ){
+            }, function (ret, err) {
+                if (ret) {
                     vm.init()
                 }
             });
 
-            function sliderlfFn(){
-                if(vm.currenIndex == 0){
-                    vm.currenIndex = vm.projectMenu.length-1;
+            function sliderlfFn() {
+                if (vm.currenIndex == 0) {
+                    vm.currenIndex = vm.projectMenu.length - 1;
                     var itemdata = vm.projectMenu[vm.currenIndex];
-                    vm.toggletabTop(itemdata,vm.currenIndex)
-                }else{
+                    vm.toggletabTop(itemdata, vm.currenIndex)
+                } else {
 
                     vm.currenIndex--;
                     var itemdata = vm.projectMenu[vm.currenIndex];
-                    vm.toggletabTop(itemdata,vm.currenIndex)
+                    vm.toggletabTop(itemdata, vm.currenIndex)
                 }
 
             }
-            function slidertrFn(){
-                if(vm.currenIndex < vm.projectMenu.length-1){
+            function slidertrFn() {
+                if (vm.currenIndex < vm.projectMenu.length - 1) {
                     vm.currenIndex++;
                     var itemdata = vm.projectMenu[vm.currenIndex];
-                    vm.toggletabTop(itemdata,vm.currenIndex)
-                }else{
+                    vm.toggletabTop(itemdata, vm.currenIndex)
+                } else {
                     vm.currenIndex = 0;
                     var itemdata = vm.projectMenu[0];
-                    vm.toggletabTop(itemdata,vm.currenIndex)
+                    vm.toggletabTop(itemdata, vm.currenIndex)
                 }
             }
             var vm = new Vue({
-                el:'#app',
-                data:{
-                    projectMenu:'',
-                    currenIndex:0,
-                    currenItem:[],//当前的子菜单项
-                    first_menuorder:'',//菜单图片menu_order
-                    menuParent_order:'',//菜单一级标识
-                    meau:'',//菜单图片路径匹配
+                el: '#app',
+                data: {
+                    projectMenu: '',
+                    currenIndex: 0,
+                    currenItem: [],//当前的子菜单项
+                    first_menuorder: '',//菜单图片menu_order
+                    menuParent_order: '',//菜单一级标识
+                    meau: '',//菜单图片路径匹配
                 },
-                created:function(){
+                created: function () {
                     this.init();
                     this.meau = [//菜单
                         [],
                         [
                             {
-                                name:'质量问题',
-                                src:'./qualityproblem/quelitylist.html',//'./qualityproblem/quelitylist.html',
-                                meau_img:'../../image/project/quality.png' //'../../image/project/quality.png',
+                                name: '质量问题',
+                                src: './qualityproblem/quelitylist.html',//'./qualityproblem/quelitylist.html',
+                                meau_img: '../../image/project/quality.png' //'../../image/project/quality.png',
                             },
                             {
-                                name:'实测实量',
-                                src:'./actualmeasurement/index.html',//'./actualmeasurement/index.html',
-                                meau_img:'../../image/project/Actual.png' //'../../image/project/Actual.png',
+                                name: '实测实量',
+                                src: './actualmeasurement/index.html',//'./actualmeasurement/index.html',
+                                meau_img: '../../image/project/Actual.png' //'../../image/project/Actual.png',
                             },
                             {
-                                name:'安全问题',
-                                src:'./securityproblem/securitylist.html',//'./securityproblem/securitylist.html',
-                                meau_img:'../../image/project/safetyproblem.png'//'../../image/project/safetyproblem.png',
+                                name: '安全问题',
+                                src: './securityproblem/securitylist.html',//'./securityproblem/securitylist.html',
+                                meau_img: '../../image/project/safetyproblem.png'//'../../image/project/safetyproblem.png',
                             },
                             {
-                                name:'安全日志',
-                                src:'./securitylog/index.html',//'./securitylog/index.html',
-                                meau_img:'../../image/project/aqlog_fn.png'//'../../image/project/aqlog_fn.png',
+                                name: '安全日志',
+                                src: './securitylog/index.html',//'./securitylog/index.html',
+                                meau_img: '../../image/project/aqlog_fn.png'//'../../image/project/aqlog_fn.png',
                             },
                             {
-                                name:'施工日志',
-                                src:'./constructionlog/index.html',//'./constructionlog/index.html',
-                                meau_img:'../../image/project/sg_log.png'//'../../image/project/sg_log.png',
+                                name: '施工日志',
+                                src: './constructionlog/index.html',//'./constructionlog/index.html',
+                                meau_img: '../../image/project/sg_log.png'//'../../image/project/sg_log.png',
                             },
                             {},
                             {},
                             {},
                             {},
                             {
-                                name:'记工表',
+                                name: '记工表',
                                 // src:'./task/index.html',
-                                meau_img:'../../image/project/Laborrecordwork.png' //'../../image/project/Laborrecordwork.png',
+                                meau_img: '../../image/project/Laborrecordwork.png' //'../../image/project/Laborrecordwork.png',
                             },
                             {
-                                name:'公文',
-                                src:'./document/index.html',//'./document/index.html',
-                                meau_img:'../../image/project/document.png'//'../../image/project/document.png',
+                                name: '公文',
+                                src: './document/index.html',//'./document/index.html',
+                                meau_img: '../../image/project/document.png'//'../../image/project/document.png',
                             },
                             {
-                                name:'任务',
-                                src:'./task/index.html',//'./task/index.html'
-                                meau_img:'../../image/project/task.png'//'../../image/project/task.png',
+                                name: '任务',
+                                src: './task/index.html',//'./task/index.html'
+                                meau_img: '../../image/project/task.png'//'../../image/project/task.png',
                             },
                             {
-                                name:'云盘',
-                                src:'./clouddisk/index.html',//'./clouddisk/index.html'
-                                meau_img:'../../image/project/Cloud.png'//'../../image/project/Cloud.png',
+                                name: '云盘',
+                                src: './clouddisk/index.html',//'./clouddisk/index.html'
+                                meau_img: '../../image/project/Cloud.png'//'../../image/project/Cloud.png',
                             },
                             {
-                                name:'考勤',
-                                meau_img:'../../image/project/checkworkattendance.png'//'../../image/project/checkworkattendance.png',
+                                name: '考勤',
+                                src: './clocking-in/index.html',
+                                meau_img: '../../image/project/checkworkattendance.png'//'../../image/project/checkworkattendance.png',
                             },
                             {
-                                name:'物资管理',
-                                meau_img:'../../image/project/material.png'//'../../image/project/material.png',
+                                name: '物资管理',
+                                meau_img: '../../image/project/material.png'//'../../image/project/material.png',
                             },
                             {
-                                name:'巡检',
-                                meau_img:'../../image/project/aq_check.png'//'../../image/project/aq_check.png',
+                                name: '巡检',
+                                meau_img: '../../image/project/aq_check.png'//'../../image/project/aq_check.png',
                             },
                             {
-                                name:'进度管理',
-                                meau_img:'../../image/project/Tripartitecooperation.png'//'../../image/project/Tripartitecooperation.png',
+                                name: '进度管理',
+                                meau_img: '../../image/project/Tripartitecooperation.png'//'../../image/project/Tripartitecooperation.png',
                             },
                             {
-                                name:'三方协同',
-                                meau_img:'../../image/project/schedule.png'//'../../image/project/schedule.png'
+                                name: '三方协同',
+                                meau_img: '../../image/project/schedule.png'//'../../image/project/schedule.png'
                             }
                         ],
                         [
                             {
-                                name:'塔机',
-                                src:'./towercarne/index.html',
-                                meau_img:'../../image/project/towerCrane_p.png'
+                                name: '塔机',
+                                src: './towercarne/index.html',
+                                meau_img: '../../image/project/towerCrane_p.png'
                             },
                             {
-                                name:'实名考勤',
-                                src:'./realnameattendance/index.html',
-                                meau_img:'../../image/project/realname.png'
+                                name: '实名考勤',
+                                src: './realnameattendance/index.html',
+                                meau_img: '../../image/project/realname.png'
                             },
                             {
-                                name:'升降机',
-                                src:'./elevator/index.html',
-                                meau_img:'../../image/project/elevator.png'
+                                name: '升降机',
+                                src: './elevator/index.html',
+                                meau_img: '../../image/project/elevator.png'
                             },
                             {
-                                name:'视频监控',
-                                src:'./videosurveillance/index.html',
-                                meau_img:'../../image/project/videosurveillance.png'
+                                name: '视频监控',
+                                src: './videosurveillance/index.html',
+                                meau_img: '../../image/project/videosurveillance.png'
                             },
                             {
-                                name:'环境监测',
-                                src:'./environmentalScience/index.html',
-                                meau_img:'../../image/project/environmentalScience.png'
+                                name: '环境监测',
+                                src: './environmentalScience/index.html',
+                                meau_img: '../../image/project/environmentalScience.png'
                             },
                         ],
                         [
                             {
-                                name:'安全检查',
-                                src:'./safetyWen.html',
-                                meau_img:'../../image/project/securitycheck.png'
+                                name: '安全检查',
+                                src: './safetyWen.html',
+                                meau_img: '../../image/project/securitycheck.png'
                             }
                         ]
                     ]
                 },
-                mounted:function(){
-                  //监听左右滑动事件切换菜单
-                  EventUtil.listenTouchDirection(document.getElementById('sildeBox'), false, slidertrFn, sliderlfFn)
+                mounted: function () {
+                    //监听左右滑动事件切换菜单
+                    EventUtil.listenTouchDirection(document.getElementById('sildeBox'), false, slidertrFn, sliderlfFn)
                 },
-                methods:{
+                methods: {
 
-                    init:function(){
+                    init: function () {
                         ajaxPost(
                             true,
                             '加载中...',
                             projectMenu,
                             {
-                                projectId:$api.getStorage('enterpriseId'),
+                                projectId: $api.getStorage('enterpriseId'),
 
                             },
-                            function(ret){
+                            function (ret) {
                                 // console.log($api.jsonToStr(ret.obj));
-                                vm.projectMenu = ret.obj.filter(function(item){
-                                    if(item.menu_order == 4 || item.menu_order == 3 || item.menu_order == 2){
+                                vm.projectMenu = ret.obj.filter(function (item) {
+                                    if (item.menu_order == 4 || item.menu_order == 3 || item.menu_order == 2) {
                                         return item
                                     }
                                 });
                                 $api.setStorage('menu', ret.obj);
-                                if(vm.projectMenu){
-                                    vm.toggletabTop(vm.projectMenu[0],0)
-                                }else{
+                                if (vm.projectMenu) {
+                                    vm.toggletabTop(vm.projectMenu[0], 0)
+                                } else {
 
                                 }
                             }
                         )
                     },
-                    toggletabTop:function(item,index){
+                    toggletabTop: function (item, index) {
                         this.currenIndex = index;
                         this.menuParent_order = item.menu_order;
-                        if(item.submenu){
+                        if (item.submenu) {
                             vm.first_menuorder = item.menu_order;
-                            var filterMenu = item.submenu.filter(function(item){
+                            var filterMenu = item.submenu.filter(function (item) {
                                 // if((vm.first_menuorder == 4) || (vm.first_menuorder == 2 && item.menu_order == 13)||(vm.first_menuorder ==3) || (vm.first_menuorder ==2  && (item.menu_order == 5 || item.menu_order == 2 || item.menu_order == 12 || item.menu_order == 11 || item.menu_order == 4 ||item.menu_order == 1 ||item.menu_order == 3))){//塔机
                                 //     return item
                                 // }
-                                if((vm.first_menuorder == 4) || !(vm.first_menuorder == 2 && (item.menu_order == 6 || item.menu_order == 7 || item.menu_order == 8 || item.menu_order == 9))){//塔机
+                                if ((vm.first_menuorder == 4) || !(vm.first_menuorder == 2 && (item.menu_order == 6 || item.menu_order == 7 || item.menu_order == 8 || item.menu_order == 9))) {//塔机
                                     return item
                                 }
                             })
                             vm.currenItem = filterMenu;
-                        }else{
+                        } else {
                             vm.first_menuorder = item.menu_order;
                             vm.currenItem = [];
                         }
                     },
-                    openMenuItem: function(url, menuOrder) {
+                    openMenuItem: function (url, menuOrder) {
                         var menuURl = url[vm.menuParent_order - 1][menuOrder.menu_order - 1].src
                         if (menuURl) {
                             api.openWin({
                                 name: menuURl,
                                 url: menuURl,
-                                reload:true,
+                                reload: true,
                                 pageParam: {
                                 }
                             });
@@ -345,6 +374,7 @@
 
 
     </script>
-</div>
+    </div>
 </body>
+
 </html>
