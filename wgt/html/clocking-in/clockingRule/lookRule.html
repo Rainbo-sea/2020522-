@@ -114,7 +114,7 @@
                     </li>
                     <li>
                         <div class="text-left">考勤方式</div>
-                        <div class="text-right">{{ruleInfo.attendanceWays}}</div>
+                        <div class="text-right">{{attendanceWays}}</div>
                     </li>
                     <li>
                         <div class="text-left">{{ruleInfo.attendanceAddress}}</div>
@@ -140,6 +140,7 @@
                 el: '#app',
                 data: {
                     ruleInfo: api.pageParam.ruleInfo || null,//考勤规则对象
+                    attendanceWays: null
                 },
                 created: function () {
                     //格式化数据
@@ -147,7 +148,17 @@
                 },
                 methods: {
                     //格式化数据
-                    layoutData: function () { },
+                    layoutData: function () {
+                        if (this.ruleInfo.attendanceWays === "1") {
+                            this.attendanceWays = "Wi-Fi"
+                        }
+                        if (this.ruleInfo.attendanceWays === "2") {
+                            this.attendanceWays = "地址"
+                        }
+                        if (this.ruleInfo.attendanceWays === "1,2" && this.ruleInfo.attendanceWays === 1) {
+                            this.attendanceWays = "地址、Wi-Fi"
+                        }
+                    },
                     //返回跳转
                     closeWin: function () {
                         api.closeWin();

@@ -8,6 +8,7 @@
     <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
     <title></title>
     <link rel="stylesheet" href="../../../../commonUi/aui/css/aui.css">
+    <link rel="stylesheet" href="../../../../commonUi/H5TimeSelector/libs/iosselect.css">
     <style>
         html {
             width: 100%;
@@ -115,6 +116,45 @@
             float: right;
             margin-left: 0.5rem;
         }
+
+        /*divselecTime模块  */
+        .select-time-div {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            display: none;
+        }
+
+        .div-top {
+            width: 100%;
+            height: 65%;
+            position: absolute;
+            top: 0;
+            background: #000000;
+            opacity: 0.2;
+        }
+
+        .div-bottom {
+            background-color: #ffffff;
+            height: 35%;
+            width: 100%;
+            position: absolute;
+            top: 65%;
+        }
+
+        .confirm {
+            background: #ffffff;
+            color: #058FFD;
+            border: 0;
+            position: absolute;
+            right: 1rem;
+            top: 0.5rem;
+        }
+
+        .aui-list-item-label span {
+            color: #058FFD;
+        }
     </style>
 </head>
 
@@ -125,7 +165,7 @@
                 <span class="aui-iconfont aui-icon-left" style="color: #058FFD; font-weight: bold;"></span>
             </a>
             <div class="aui-title header_title" id="header_title">新增考勤组</div>
-            <a class="aui-pull-right" tapmode @click="openaddtask()">
+            <a class="aui-pull-right" tapmode>
                 <div class="add-btn" @click="addRule()">保存</div>
             </a>
         </header>
@@ -135,24 +175,29 @@
                     <img src="../../../../image/clocking-in/xingxing.png" alt="">
                 </div>
                 <div class="name-right">
-                    <input type="text" placeholder="请输入名称">
+                    <input type="text" placeholder="请输入名称" v-model="rulesName">
                 </div>
             </div>
             <div class="rule-content">
                 <ul>
-                    <li>
+                    <li @click="openSelectObj()">
                         <div class="text-left">考勤对象
                             <img src="../../../../image/clocking-in/xingxing.png" alt="">
                         </div>
                         <div class="text-right">
+                            {{attendanceRoleName}}
                             <img src="../../../../image/clocking-in/right.png" alt="">
                         </div>
                     </li>
-                    <li>
+                    <li @click="openSelectTime()">
                         <div class="text-left">上下班时间
                             <img src="../../../../image/clocking-in/xingxing.png" alt="">
                         </div>
                         <div class="text-right">
+                            <span v-if="startWorkHour">{{startWorkHour}}:{{startWorkMinute}}<span
+                                    v-if="!startWorkMinute">0</span>-{{endWorkHour}}:{{endWorkMinute}}<span
+                                    v-if="!endWorkMinute">0</span>&nbsp;&nbsp;</span>
+                            {{countWorkHour}}<span v-if="countWorkHour">小时</span>&nbsp;&nbsp;&nbsp;
                             <img src="../../../../image/clocking-in/right.png" alt="">
                         </div>
                     </li>
@@ -160,10 +205,12 @@
                         <div class="text-left">休假</div>
                         <div class="text-right xiujia">
                             <div class="aui-list-item-input">
-                                <input type="checkbox" class="aui-switch" checked>
+                                <input type="checkbox" class="aui-switch" v-model="holidayFlage" checked>
                             </div>
-                            <div class="aui-list-item-label">
-                                Switch
+                            <div class="aui-list-item-label" v-if="holidayFlage">
+                                <span
+                                    @click="selectStartHoliday()">{{startHoliday}}</span>&nbsp;&nbsp;-&nbsp;&nbsp;<span
+                                    @click="selectEndHoliday()">{{endHoliday}}</span>
                             </div>
                         </div>
                     </li>
@@ -171,8 +218,10 @@
                         <div class="text-left">考勤方式</div>
                         <div class="text-right">
                             <div class="aui-list-item-input">
-                                <label><input class="aui-radio" type="radio" name="demo1" checked> 地址</label>
-                                <label><input class="aui-radio" type="radio" name="demo1"> Wi-Fi</label>
+                                <label><input class="aui-radio" type="checkbox" name="demo1" v-model="addrFlage"
+                                        checked> 地址</label>
+                                <label><input class="aui-radio" type="checkbox" name="demo1" v-model="wifiFlage">
+                                    Wi-Fi</label>
                             </div>
                         </div>
                     </li>
@@ -183,24 +232,57 @@
                     </li>
                 </ul>
             </div>
-            <div class="rule-wifi">
-                <a href="">添加考勤Wi-Fi</a>
+            <div class="rule-wifi" @click="addWifi()">
+                <a>添加考勤Wi-Fi</a>
             </div>
         </div>
+        <div class="select-time-div">
+            <div class="div-top" @click="colseSelectTime()">
+
+            </div>休假
+            <div class="div-bottom">
+                <div class="aui-tab" id="tab" style="border-bottom: 1px #FCFCFC solid;">
+                    <div class="aui-tab-item aui-active" onclick="randomSwitchBtn(this)" @click="goWorkTime()">上班时间
+                    </div>
+                    <div class="aui-tab-item" onclick="randomSwitchBtn(this)" @click="closeWorkTime()">下班时间</div>
+                    <div class="aui-tab-item"></div>
+                    <div class="aui-tab-item"></div>
+                </div>
+                <button class="confirm" @click="confirmSelectTime()">确定</button>
+            </div>
+        </div>
+
     </div>
     <script src="../../../../script/api.js"></script>
     <script src="../../../../script/vue.js"></script>
     <script src="../../../../script/sha1.js"></script>
     <script src="../../../../script/aui-dialog.js"></script>
     <script src="../../../../script/common.js"></script>
+    <script type="text/javascript" src="../../../../commonUi/H5TimeSelector/libs/iosselect.js"></script>
+    <script type="text/javascript" src="../../../../commonUi/H5TimeSelector/timeselector.js"></script>
     <script>
         var dialog = new auiDialog({})
         apiready = function () {
+            var goWorkTime = api.require('timeSelector');
             $api.fixStatusBar($api.dom('.header'));
             var vm = new Vue({
                 el: '#app',
                 data: {
                     ruleInfo: api.pageParam.ruleInfo || null,//考勤规则对象
+                    WorkHour: 0,
+                    WorkMinute: 0,
+                    startWorkHour: 0,  //上班时间小时
+                    startWorkMinute: 0,  //上班时间分钟
+                    endWorkHour: 0,  //下班时间小时
+                    endWorkMinute: 0,  //下班时间分钟
+                    countWorkHour: null,    //工作时常
+                    attendanceRoleName: null,//考勤人员
+                    addrFlage: null,    //地址选择标识
+                    wifiFlage: null,   //wifi标识
+                    holidayFlage: null,  //休假标识
+                    rulesName: null,  //规则对象名
+                    startHoliday: '开始时间',
+                    endHoliday: '结束时间',
                 },
                 created: function () {
                     //格式化数据
@@ -216,9 +298,164 @@
                     //
                     addRule: function () {
 
-                    }
+                    },
+                    //选择时间模块
+                    openSelectTime: function () {
+                        document.getElementsByClassName('select-time-div')[0].style.display = "block";
+                        this.goWorkTime();
+                    },
+                    //关闭时间模块
+                    colseSelectTime() {
+                        document.getElementsByClassName('select-time-div')[0].style.display = "none";
+                        goWorkTime.close();
+                        this.startWorkHour = null;  //上班时间小时
+                        this.startWorkMinute = null;  //上班时间分钟
+                        this.endWorkHour = null;  //下班时间小时
+                        this.endWorkMinute = null;  //下班时间分钟
+                    },
+                    //确定选择时间
+                    confirmSelectTime() {
+                        if (this.endWorkHour - this.startWorkHour > 0) {
+                            document.getElementsByClassName('select-time-div')[0].style.display = "none";
+                            goWorkTime.close();
+                            if (this.endWorkMinute - this.startWorkMinute > 0) {
+                                this.countWorkHour = this.endWorkHour - this.startWorkHour + (this.endWorkMinute - this.startWorkMinute) / 60
+                                this.countWorkHour = this.countWorkHour.toFixed(1);
+                            } else {
+                                this.countWorkHour = this.endWorkHour - this.startWorkHour - 1 + (this.endWorkMinute + 60 - this.startWorkMinute) / 60
+                                this.countWorkHour = this.countWorkHour.toFixed(1);
+                            }
+                        } else {
+                            api.toast({
+                                msg: '时间选择错误，请重新选择',
+                                duration: 2000,
+                                location: 'middle      '
+                            });
+                        }
+                    },
+                    //选择上班时间
+                    goWorkTime() {
+                        var that = this
+                        goWorkTime.open({
+                            x: 0,
+                            y: 500,
+                            width: api.frameWidth,
+                            height: 260,
+                            fixedOn: api.frameName,
+                            separateColor: '#ffffff',
+                            hour: that.startWorkHour,
+                            minute: that.startWorkMinute,
+                        }, function (ret, err) {
+                            if (ret) {
+                                // console.log("上班时间" + JSON.stringify(ret));
+                                that.startWorkHour = ret.hour;
+                                that.startWorkMinute = ret.minute;
+                            } else {
+                            }
+                        });
+                    },
+                    //选择下班班时间
+                    closeWorkTime() {
+                        var that = this
+                        goWorkTime.open({
+                            x: 0,
+                            y: 500,
+                            width: api.frameWidth,
+                            height: 260,
+                            fixedOn: api.frameName,
+                            separateColor: '#ffffff',
+                            hour: that.endWorkHour,
+                            minute: that.endWorkMinute,
+                        }, function (ret, err) {
+                            if (ret) {
+                                // console.log("上班时间" + JSON.stringify(ret));
+                                that.endWorkHour = ret.hour;
+                                that.endWorkMinute = ret.minute;
+                            } else {
+                            }
+                        });
+                    },
+                    //选择对象
+                    openSelectObj() {
+                        api.openWin({
+                            name: 'selectOjc',
+                            url: 'selectOjc.html',
+                            pageParam: {
+                                name: 'selectOjc'
+                            }
+                        });
+                    },
+                    //添加wifi
+                    addWifi() {
+                        api.openFrame({
+                            name: 'selectWifi',
+                            url: 'selectWifi.html',
+                            pageParam: {},
+                            bounces: false,
+                            bgColor: 'rgba(0,0,0,0)',
+                            vScrollBarEnabled: true,
+                            hScrollBarEnabled: true
+                        });
+                    },
+                    //选择开始休假时间
+                    selectStartHoliday() {
+                        var that = this;
+                        //获取日志日期
+                        var timeDate = new Date();
+                        timeSelector.fnOpenSelector({
+                            title: ' ', //选填 |  '时间选择'    |  String         |  选择器标题文案
+                            sureText: '完成', //选填 |    '完成'      |  String        |   确定按钮文案
+                            isShowUnit: true, //选填 |     true      |  Boolean        |  是否显示中文单位名称
+                            itemShowCount: 5, //选填 |      5        |  Number         |  显示的行数
+                            itemHeight: 55, //选填 |      55       |  Number         |  行高度（单位px）
+                            date: timeDate.getFullYear() + '/' + (timeDate.getMonth() + 1) + '/' + timeDate.getDate()   //选填 |   new Date    |  Date/String     |  默认选中的时间
+                        }, function (ret) {
+                            console.log(JSON.stringify(ret))
+                            if (!ret) { return }
+                            var date = new Date(ret.date)
+                            that.startHoliday = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();//选择的时间年月日
+                        })
+                    },
+                    //选择结束休假时间
+                    selectEndHoliday() {
+                        var that = this;
+                        //获取日志日期
+                        var timeDate = new Date();
+                        timeSelector.fnOpenSelector({
+                            title: ' ', //选填 |  '时间选择'    |  String         |  选择器标题文案
+                            sureText: '完成', //选填 |    '完成'      |  String        |   确定按钮文案
+                            isShowUnit: true, //选填 |     true      |  Boolean        |  是否显示中文单位名称
+                            itemShowCount: 5, //选填 |      5        |  Number         |  显示的行数
+                            itemHeight: 55, //选填 |      55       |  Number         |  行高度（单位px）
+                            date: timeDate.getFullYear() + '/' + (timeDate.getMonth() + 1) + '/' + timeDate.getDate()   //选填 |   new Date    |  Date/String     |  默认选中的时间
+                        }, function (ret) {
+                            console.log(JSON.stringify(ret))
+                            if (!ret) { return }
+                            var date = new Date(ret.date)
+                            that.endHoliday = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();//选择的时间年月日
+                        })
+                    },
                 },
             })
+        }
+        // 随意切换按钮
+        function randomSwitchBtn(tag, falge) {
+            if (tag == $api.dom('.aui-tab-item.aui-active')) return;
+            var eHeaderLis = $api.domAll('.aui-tab-item'),
+                index = 0;
+            for (var i = 0, len = eHeaderLis.length; i < len; i++) {
+                if (tag == eHeaderLis[i]) {
+                    index = i;
+                } else {
+                    $api.removeCls(eHeaderLis[i], 'aui-active');
+                }
+            }
+            $api.addCls(eHeaderLis[index], 'aui-active');
+            if (falge === 1) {
+
+            } else {
+
+            }
         }
     </script>
 </body>

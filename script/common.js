@@ -454,6 +454,8 @@ const applyListInfoURL = BASE_URL + '/app/appAttendanceRecord/applyListInfo' //�
 
 const attendanceForDayListURL = BASE_URL + '/app/attendance/attendanceForDayList' //日统计打卡详情列表
 
+const roleListURL = BASE_URL + '/app/role/roleList' //获取角色列表
+
 function ajaxGet(ismessg, wonrname, interfaceurl, jsonDate, fn) { //网络请求
     if (ismessg) {
         api.showProgress({

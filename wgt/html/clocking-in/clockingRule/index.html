@@ -184,6 +184,7 @@
                             projectId: $api.getStorage('enterpriseId'),
                         },
                             function (ret) {
+                                console.log("____" + JSON.stringify(ret));
                                 that.ruleInfo = ret.obj
                             }
                         )

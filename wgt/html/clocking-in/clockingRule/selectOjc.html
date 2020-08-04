@@ -53,6 +53,7 @@
         .list-ojc-div {
             width: 100%;
             height: 1.5rem;
+            margin-top: 0.5rem;
             border-bottom: 1px #F5F5F5 solid;
         }
 
@@ -72,34 +73,71 @@
             border-radius: 50%;
             margin-right: 0.5rem;
         }
+
+        .content {
+            padding-bottom: 9.5%;
+        }
+
+        .footer {
+            height: 2rem;
+            width: 100%;
+            background-color: #ffffff;
+            border-top: 1px #B1B8BF solid;
+            position: fixed;
+            bottom: 0;
+            padding-top: 0.5rem;
+            padding-left: 0.5rem;
+        }
+
+        .footer-right {
+            float: right;
+        }
+
+        .footer-btn-right {
+            float: right;
+            height: 2rem;
+            width: 4rem;
+            background-color: #0590FF;
+            color: #ffffff;
+            margin-top: -0.5rem;
+            border: 0;
+            border-radius: 0;
+        }
     </style>
 </head>
 
 <body>
     <div class="container" id="app">
-        <header class="aui-bar aui-bar-nav aui-bar-light header">
-            <a class="aui-pull-left aui-btn" @click="closeWin()" tapmode>
-                <span class="aui-iconfont aui-icon-left" style="color: #058FFD; font-weight: bold;"></span>
-            </a>
-            <div class="aui-title header_title" style="color: #000000;" id="header_title">新增考勤组</div>
-            <a class="aui-pull-right" tapmode @click="openaddtask()">
-                <div class="add-btn" @click="addRule()">保存</div>
-            </a>
-        </header>
-        <div class="aui-searchbar-input aui-border-radius search" tapmode onclick="doSearch()">
-            <i class="aui-iconfont aui-icon-search"></i>
-            <form action="javascript:search();">
-                <input type="search" placeholder="请输入搜索内容" id="search-input">
-            </form>
-        </div>
         <div class="content">
+            <header class="aui-bar aui-bar-nav aui-bar-light header">
+                <a class="aui-pull-left aui-btn" @click="closeWin()" tapmode>
+                    <span class="aui-iconfont aui-icon-left" style="color: #058FFD; font-weight: bold;"></span>
+                </a>
+                <div class="aui-title header_title" style="color: #000000;" id="header_title">新增考勤组</div>
+                <a class="aui-pull-right" tapmode @click="openaddtask()">
+                    <div class="add-btn" @click="addRule()">保存</div>
+                </a>
+            </header>
+            <div class="aui-searchbar-input aui-border-radius search" tapmode click="doSearch()">
+                <i class="aui-iconfont aui-icon-search"></i>
+                <form action="javascript:search();">
+                    <input type="search" placeholder="请输入搜索内容" id="search-input">
+                </form>
+            </div>
             <div class="list-ojc" v-for>
                 <div class="list-ojc-div" v-for="(items,index) in ruleObjInfo" :key="index">
                     <div class="aui-list-item-left">
-                        <input type="checkbox" class="aui-checkbox float-left" checked>
+                        <input type="checkbox" class="aui-checkbox float-left" @change="changeValue()">
                     </div>
-                    <div class="aui-list-item-title">{{items.name}}</div>
+                    <div class="aui-list-item-title">{{items.position}}</div>
                 </div>
+            </div>
+        </div>
+        <div class="footer">
+            <input type="checkbox" class="aui-checkbox float-left" >全选
+            <div class="footer-right">
+                <span>合计:</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                <button class="footer-btn-right">确定</button>
             </div>
         </div>
     </div>
@@ -115,6 +153,7 @@
                 el: '#app',
                 data: {
                     ruleObjInfo: [],//考勤规则对象: null,//考勤规则对象
+                    obj: null,
                 },
                 created: function () {
                     this.getRuleObjInfo();
@@ -125,10 +164,11 @@
                         var that = this;
                         $app.post(
                             true,
-                            attendanceForMonthURL, {
+                            roleListURL, {
                             projectId: $api.getStorage('enterpriseId'),
                         },
                             function (ret) {
+                                console.log(JSON.stringify(ret));
                                 that.ruleObjInfo = ret.obj
                             }
                         )
@@ -142,10 +182,18 @@
                     cancelCheck: function () {
                         document.getElementsByClassName('radius-check')[1].display = "none";
                         document.getElementsByClassName('radius-check')[0].display = "flex";
+                    },
+                    //
+                    changeValue() {
+                        console.log(JSON.stringify(this.obj));
+                    },
+                    //返回上一个页面
+                    closeWin() {
+                        api.closeWin();
                     }
                 },
             })
-        }
+        } 
     </script>
 </body>
 

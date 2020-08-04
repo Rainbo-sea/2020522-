@@ -58,7 +58,7 @@
 <body>
     <div class="container" id="app">
         <header class="aui-bar aui-bar-nav aui-bar-light header" id="header">
-            <a class="aui-pull-left aui-btn" onclick="closeWin()" tapmode>
+            <a class="aui-pull-left aui-btn" @click="closeWin()" tapmode>
                 <span style="font-weight:bold" class="aui-iconfont aui-icon-left"></span>
             </a>
             <div class="aui-title header_title" id="header_title">考勤Wi-Fi</div>
@@ -75,8 +75,8 @@
             </div>
             <div class="selected">
                 <p>可选 Wi-Fi</p>
-                <div v-for="(items,index) in choosableWifi" :key="index"
-                    @click="selectedWifiInfo(choosableWifi[index],index)">
+                <div v-for="(items,index) in choosableWifi" :key="index" v-if="items.SSID"
+                    @click="selectedWifiInfo(items)">
                     {{items.SSID}}
                 </div>
             </div>
@@ -117,11 +117,14 @@
                         this.selectedWifi.push(items);
                     },
                     //添加已选择的wifi
-                    selectedWifiInfo: function (items, index) {
+                    selectedWifiInfo: function (items) {
                         this.selectedWifi.splice(index, 1);
                         this.selectedWifi.push(items);
-                        alert(JSON.stringify(this.selectedWifi));
-
+                        alert(JSON.stringify(items1));
+                    },
+                    //返回上一个页面
+                    closeWin() {
+                        api.closeWin();
                     }
                 },
             })

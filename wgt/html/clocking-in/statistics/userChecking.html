@@ -43,7 +43,6 @@
         }
 
         .content {
-            margin-top: 0.5rem;
             width: 100%;
             background: #ffffff;
         }
@@ -104,101 +103,99 @@
 
         .checking-list div {
             float: right;
+            height: 2rem;
         }
     </style>
 </head>
 
 <body>
-    <div id="app">
-        <!-- <header class="aui-bar aui-bar-nav bg_f header" id="header">
+    <!-- <header class="aui-bar aui-bar-nav bg_f header" id="header">
             <a class="aui-pull-left aui-btn aui-btn-left" onclick="closeWin()">
                 <span class="aui-iconfont aui-icon-left"></span>
             </a>
             <div class="aui-title color_3">统计</div>
         </header> -->
-        <div class="content">
-            <div class="container-header">
-                <div class="name-img" v-text="userInfo.name">
-                    张一山
+    <div class="content" id="app">
+        <div class="container-header">
+            <div class="name-img" v-text="userInfo.name">
+                张一山
+            </div>
+            <div class="user-info">
+                <div class="user-name">
+                    {{userInfo.name}}
                 </div>
-                <div class="user-info">
-                    <div class="user-name">
-                        {{userInfo.name}}
-                    </div>
-                    <div class="clocking-name" v-clock>
-                        考勤组：{{rulesName}}
-                    </div>
-                </div>
-                <div class="clocking-time" @click="selectTime()">
-                    {{todayTime}}
-                    <i class="aui-iconfont aui-icon-right"></i>
+                <div class="clocking-name" v-clock>
+                    考勤组：{{rulesName}}
                 </div>
             </div>
-            <div class="checking-list">
-                出勤
-                <div>
-                    12天
-                    <i class="aui-iconfont aui-icon-down"></i>
-                </div>
-            </div>
-            <div class="checking-list">
-                迟到
-                <div>
-                    1 次，共 30 分钟
-                    <i class="aui-iconfont aui-icon-down"></i>
-                </div>
-            </div>
-            <div class="checking-list">
-                早退
-                <div>
-                    1次
-                    <i class="aui-iconfont aui-icon-down"></i>
-                </div>
-            </div>
-            <div class="checking-list">
-                缺卡
-                <div>
-                    1次
-                    <i class="aui-iconfont aui-icon-down"></i>
-                </div>
-            </div>
-            <div class="checking-list">
-                旷工
-                <div>
-                    1天
-                    <i class="aui-iconfont aui-icon-down"></i>
-                </div>
-            </div>
-            <div class="checking-list">
-                外勤
-                <div>
-                    1次
-                    <i class="aui-iconfont aui-icon-down"></i>
-                </div>
-            </div>
-            <div class="checking-list">
-                请假
-                <div>
-                    1次
-                    <i class="aui-iconfont aui-icon-down"></i>
-                </div>
-            </div>
-            <div class="checking-list">
-                出差
-                <div>
-                    1天
-                    <i class="aui-iconfont aui-icon-down"></i>
-                </div>
-            </div>
-            <div class="checking-list">
-                补卡申请
-                <div>
-                    1次
-                    <i class="aui-iconfont aui-icon-down"></i>
-                </div>
+            <div class="clocking-time" @click="selectTime()">
+                {{todayTime}}
+                <i class="aui-iconfont aui-icon-right"></i>
             </div>
         </div>
-
+        <div class="checking-list">
+            出勤
+            <div>
+                12天
+                <i class="aui-iconfont aui-icon-down"></i>
+            </div>
+        </div>
+        <div class="checking-list">
+            迟到
+            <div>
+                1 次，共 30 分钟
+                <i class="aui-iconfont aui-icon-down"></i>
+            </div>
+        </div>
+        <div class="checking-list">
+            早退
+            <div>
+                1次
+                <i class="aui-iconfont aui-icon-down"></i>
+            </div>
+        </div>
+        <div class="checking-list">
+            缺卡
+            <div>
+                1次
+                <i class="aui-iconfont aui-icon-down"></i>
+            </div>
+        </div>
+        <div class="checking-list">
+            旷工
+            <div>
+                1天
+                <i class="aui-iconfont aui-icon-down"></i>
+            </div>
+        </div>
+        <div class="checking-list">
+            外勤
+            <div>
+                1次
+                <i class="aui-iconfont aui-icon-down"></i>
+            </div>
+        </div>
+        <div class="checking-list">
+            请假
+            <div>
+                1次
+                <i class="aui-iconfont aui-icon-down"></i>
+            </div>
+        </div>
+        <div class="checking-list">
+            出差
+            <div>
+                1天
+                <i class="aui-iconfont aui-icon-down"></i>
+            </div>
+        </div>
+        <div class="checking-list">
+            补卡申请
+            <div>
+                1次
+                <i class="aui-iconfont aui-icon-down"></i>
+            </div>
+        </div>
     </div>
 
     <script src="../../../../script/common.js"></script>
@@ -215,6 +212,7 @@
                 data: {
                     dayStatistics: {}, //日统计打卡信息
                     todayTime: $app.formDate(false, '-') || null,//默认今天
+                    userInfo: null,
                 },
                 created: function () {
                     //获取日常打卡信息
