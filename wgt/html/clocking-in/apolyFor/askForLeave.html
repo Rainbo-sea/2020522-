@@ -8,6 +8,7 @@
     <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
     <title></title>
     <link rel="stylesheet" href="../../../../commonUi/aui/css/aui.css">
+    <link rel="stylesheet" href="../../../../commonUi/H5TimeSelector/libs/iosselect.css">
     <style>
         html {
             width: 100%;
@@ -136,6 +137,7 @@
                             <img src="../../../../image/clocking-in/xingxing.png" alt="">
                         </div>
                         <div class="text-right">
+                            {{leaveTypeText}}
                             <img src="../../../../image/clocking-in/right.png" alt="">
                         </div>
                     </li>
@@ -144,6 +146,7 @@
                             <img src="../../../../image/clocking-in/xingxing.png" alt="">
                         </div>
                         <div class="text-right">
+                            <span>{{applyStartTime}}</span><span>{{applyClock}}</span>
                             <img src="../../../../image/clocking-in/right.png" alt="">
                         </div>
                     </li>
@@ -199,6 +202,8 @@
     <script src="../../../../script/sha1.js"></script>
     <script src="../../../../script/aui-dialog.js"></script>
     <script src="../../../../script/common.js"></script>
+    <script type="text/javascript" src="../../../../commonUi/H5TimeSelector/libs/iosselect.js"></script>
+    <script type="text/javascript" src="../../../../commonUi/H5TimeSelector/timeselector.js"></script>
     <script>
         var dialog = new auiDialog({})
         apiready = function () {
@@ -207,6 +212,11 @@
                 el: '#app',
                 data: {
                     ruleInfo: api.pageParam.ruleInfo || null,//考勤规则对象
+                    leaveType: null, //请假类型
+                    leaveTypeText: null, //请假类型文字
+                    applyStartTime: null,//申请开始时间
+                    applyEndTime: null,//申请结束时间
+                    applyClock: null,//时间段
                 },
                 created: function () {
                     //格式化数据
@@ -231,12 +241,56 @@
                             cancelTitle: '取消',
                             buttons: ['事假', '产假', '病假', '调休']
                         }, function (ret, err) {
-                            var index = ret.buttonIndex;
+                            that.leaveType = ret.buttonIndex;
+                            switch (that.leaveType) {
+                                case 1:
+                                    that.leaveTypeText = '事假';
+                                    break;
+                                case 2:
+                                    that.leaveTypeText = '产假';
+                                    break;
+                                case 3:
+                                    that.leaveTypeText = '病假';
+                                    break;
+                                case 4:
+                                    that.leaveTypeText = '调休';
+                                    break;
+                            }
                         });
                     },
                     //选择开始时间
                     startTime: function () {
-
+                        var that = this;
+                        //获取日志日期
+                        var timeDate = new Date();
+                        timeSelector.fnOpenSelector({
+                            title: ' ', //选填 |  '时间选择'    |  String         |  选择器标题文案
+                            sureText: '完成', //选填 |    '完成'      |  String        |   确定按钮文案
+                            isShowUnit: true, //选填 |     true      |  Boolean        |  是否显示中文单位名称
+                            itemShowCount: 5, //选填 |      5        |  Number         |  显示的行数
+                            itemHeight: 55, //选填 |      55       |  Number         |  行高度（单位px）
+                            date: timeDate.getFullYear() + '/' + (timeDate.getMonth() + 1) + '/' + timeDate.getDate()   //选填 |   new Date    |  Date/String     |  默认选中的时间
+                        }, function (ret) {
+                            console.log(JSON.stringify(ret))
+                            if (!ret) { return }
+                            var date = new Date(ret.date)
+                            that.applyStartTime = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();//选择的时间年月日
+                            api.actionSheet({
+                                title: '选择时间',
+                                cancelTitle: '取消',
+                                buttons: ['上午', '下午']
+                            }, function (ret, err) {
+                                that.leaveType = ret.buttonIndex;
+                                switch (that.leaveType) {
+                                    case 1:
+                                        that.leaveTypeText = '上午';
+                                        break;
+                                    case 2:
+                                        that.leaveTypeText = '下午';
+                                        break;
+                                }
+                            });
+                        })
                     },
                     //选择结束时间
                     endTime: function () {

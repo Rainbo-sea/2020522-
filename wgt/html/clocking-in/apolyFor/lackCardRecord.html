@@ -34,6 +34,7 @@
 
         .content {
             width: 100%;
+            margin-top: 0.5rem;
         }
 
         .selected p {
@@ -58,15 +59,18 @@
 <body>
     <div class="container" id="app">
         <header class="aui-bar aui-bar-nav aui-bar-light header" id="header">
-            <a class="aui-pull-left aui-btn" onclick="closeWin()" tapmode>
+            <a class="aui-pull-left aui-btn" @click="closeFrame()" tapmode>
                 <span style="font-weight:bold" class="aui-iconfont aui-icon-left"></span>
             </a>
             <div class="aui-title header_title" id="header_title">缺卡记录</div>
         </header>
         <div class="content">
             <div class="selected">
-                <divv-for ="(items,index) in lackCard" :key="index"></div>
-                
+                <div v-for="(items,index) in lackCard" :key="index" @click="getLackTime(items)">
+                    <span>{{items.yearDate}}</span>&nbsp; <span>({{items.week}})</span>&nbsp;
+                    <span>{{items.dayDate}}</span>
+                </div>
+
             </div>
         </div>
     </div>
@@ -88,11 +92,59 @@
                 created: function () {
                     //却卡信息
                     this.getLackCardRecord();
+
                 },
                 methods: {
                     //获取却卡信息
-                    getLackCardRecord: function () {
+                    getLackCardRecord() {
+                        var that = this;
+                        $app.post(
+                            true,
+                            getAttendanceMissListURL, {
+                            projectId: $api.getStorage('enterpriseId'),
+                            userId: $api.getStorage('userId'),
+                        },
+                            function (ret) {
+                                // console.log(JSON.stringify(ret))
+                                that.lackCard = ret.obj;
+                                //格式化数据
+                                that.changeDate();
+                            }
+                        );
                     },
+                    //处理数据
+                    changeDate() {
+                        var that = this;
+                        that.lackCard.map(function (item) {
+                            item.dayDate = item.applyStartTime.slice(11);
+                            item.yearDate = item.applyStartTime.slice(0, 10);
+                            var arys1 = item.yearDate.split('-');     //日期为输入日期，格式为 2013-3-10
+                            var ssdate = new Date(arys1[0], parseInt(arys1[1] - 1), arys1[2]);
+                            var week1 = String(ssdate.getDay()).replace("0", "日").replace("1", "一").replace("2", "二").replace("3", "三").replace("4", "四").replace("5", "五").replace("6", "六")
+                            var week = "星期" + week1;
+                            item.week = week;
+                        })
+                    },
+                    closeFrame: function () {
+                        api.closeWin();
+                    },
+                    getLackTime(items) {
+                        console.log(items.applyStartTime)
+                        api.openFrame({
+                            name: 'reissueCard',
+                            url: 'reissueCard.html',
+                            bounces: true,
+                            rect: {
+                                x: 0,
+                                y: 0,
+                                w: 'auto',
+                                h: 'auto'
+                            },
+                            pageParam: {
+                                applyStartTime: items.applyStartTime
+                            }
+                        });
+                    }
                 },
             })
         }

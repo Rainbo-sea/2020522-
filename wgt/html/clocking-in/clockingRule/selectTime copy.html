@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title></title>
+    <link rel="stylesheet" href="../../../../commonUi/aui/css/aui.css">
+    <style>
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        .container {
+            min-height: 96vh;
+            width: 100%;
+            background-color: transparent;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+        }
+
+        .div-top {
+            width: 100%;
+            height: 65%;
+            position: absolute;
+            top: 0;
+            background: rgba(135, 137, 142, 0.5);
+            opacity: 0.2;
+        }
+
+        .div-bottom {
+            background-color: #ffffff;
+            height: 12rem;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .confirm {
+            background: #ffffff;
+            color: #058FFD;
+            border: 0;
+            position: absolute;
+            right: 1rem;
+            top: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="app">
+        <div class="div-top">
+
+        </div>
+        <div class="div-bottom">
+            <div class="aui-tab" id="tab" style="border-bottom: 1px #FCFCFC solid;">
+                <div class="aui-tab-item aui-active" onclick="randomSwitchBtn(this)" @click="goWorkTime()">上班时间</div>
+                <div class="aui-tab-item" onclick="randomSwitchBtn(this)" @click="closeWorkTime()">下班时间</div>
+                <div class="aui-tab-item"></div>
+                <div class="aui-tab-item"></div>
+            </div>
+            <button class="confirm" @click="">确定</button>
+        </div>
+    </div>
+    <script src="../../../../script/api.js"></script>
+    <script src="../../../../script/vue.js"></script>
+    <script src="../../../../script/sha1.js"></script>
+    <script src="../../../../script/aui-dialog.js"></script>
+    <script src="../../../../script/common.js"></script>
+    <script>
+        var dialog = new auiDialog({})
+
+        apiready = function () {
+            var goWorkTime = api.require('timeSelector');
+            var vm = new Vue({
+                el: '#app',
+                data: {
+                    WorkHour: 0,
+                    WorkMinute: 0,
+                    startWorkHour: 0,  //上班时间小时
+                    startWorkMinute: 0,  //上班时间分钟
+                    endWorkHour: 0,  //下班时间小时
+                    endWorkMinute: 0,  //下班时间分钟
+                },
+                created: function () {
+                    // this.selectTime(0, 0);
+                },
+                methods: {
+                    //选择上下班时间
+                    selectTime(WorkHour, WorkMinute) {
+                        var that = this;
+                        //上班时间
+                        goWorkTime.open({
+                            x: 0,
+                            y: 450,
+                            width: api.frameWidth,
+                            height: 260,
+                            fixedOn: api.frameName,
+                            separateColor: '#ffffff',
+                            hour: WorkHour,
+                            minute: WorkMinute,
+                        }, function (ret, err) {
+                            if (ret) {
+                                // console.log("上班时间");
+                                that.WorkHour = ret.hour;
+                                that.WorkMinute = ret.minute;
+                            } else {
+                            }
+                        });
+                    },
+
+                    //选择上班时间
+                    goWorkTime() {
+                        this.endWorkHour = this.WorkHour
+                        this.endWorkMinute = this.WorkMinute
+                        this.selectTime(this.startWorkHour, this.startWorkMinute)
+                    },
+                    //选择下班班时间
+                    closeWorkTime() {
+                        this.startWorkHour = this.WorkHour
+                        this.startWorkMinute = this.WorkMinute
+                        this.selectTime(this.endWorkHour, this.endWorkMinute)
+                    },
+                }
+            })
+        }
+        // 随意切换按钮
+        function randomSwitchBtn(tag, falge) {
+            if (tag == $api.dom('.aui-tab-item.aui-active')) return;
+            var eHeaderLis = $api.domAll('.aui-tab-item'),
+                index = 0;
+            for (var i = 0, len = eHeaderLis.length; i < len; i++) {
+                if (tag == eHeaderLis[i]) {
+                    index = i;
+                } else {
+                    $api.removeCls(eHeaderLis[i], 'aui-active');
+                }
+            }
+            $api.addCls(eHeaderLis[index], 'aui-active');
+            if (falge === 1) {
+
+            } else {
+
+            }
+        }
+    </script>
+</body>
+
+</html>

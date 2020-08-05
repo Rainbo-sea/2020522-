@@ -456,6 +456,8 @@ const attendanceForDayListURL = BASE_URL + '/app/attendance/attendanceForDayList
 
 const roleListURL = BASE_URL + '/app/role/roleList' //获取角色列表
 
+const getAttendanceMissListURL = BASE_URL + '/app/attendance/getAttendanceMissList' //获取用户缺卡列表（补卡申请时）
+
 function ajaxGet(ismessg, wonrname, interfaceurl, jsonDate, fn) { //网络请求
     if (ismessg) {
         api.showProgress({

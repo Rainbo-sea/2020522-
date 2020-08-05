@@ -302,10 +302,10 @@
         张一山
       </div>
       <div class="user-info">
-        <div v-clock class="user-name">
+        <div class="user-name">
           {{userInfo.name}}
         </div>
-        <div v-clock class="clocking-name">
+        <div class="clocking-name" v-clock>
           考勤组：{{rulesName}}
         </div>
       </div>
@@ -331,7 +331,7 @@
         <div class="label-late">缺卡</div>
         <div class="addImg">
           <img src="../../../image/clocking-in/kq_icon_place.png" style="float: left;" />
-          <div v-clock>{{attStartAddress}}</div>
+          <div>{{attStartAddress}}</div>
         </div>
 
         <div class="clocking-error">
@@ -344,7 +344,7 @@
       </div>
       <!-- 下班打卡成功后的文档 -->
       <div id="offWorkTextDom" class="clocking-succeed-text" style="border: 0 ;">
-        <div class="clocking-succeed-time" v-clock>打卡时间 {{endTime}}</div>
+        <div class="clocking-succeed-time">打卡时间 {{endTime}}</div>
         <div class="label-normal">正常</div>
         <div class="label-late">迟到</div>
         <div class="label-outwork">外勤</div>
@@ -353,7 +353,7 @@
         <div class="label-late">早退</div>
         <div class="addImg">
           <img src="../../../image/clocking-in/kq_icon_place.png" style="float: left;" />
-          <div v-clock>{{attEndAddress}}</div>
+          <div>{{attEndAddress}}</div>
         </div>
 
         <div class="clocking-error" style="margin-bottom: 0;">
@@ -413,7 +413,7 @@
         <!-- 外勤打卡 -->
         <div v-else>
           <div class="clocking-radius">
-            <div class="clocking-radius-div ">
+            <div class="clocking-radius-div " @click="stateWorkWq()">
               <div>外勤打卡</div>
               <div id="nowtime3"></div>
             </div>
@@ -439,9 +439,6 @@
     apiready = function () {
       $api.fixStatusBar($api.dom('.header'));
       var bMap = api.require('bMap');
-      //侵入式导航栏
-      // $api.fixStatusBar($api.dom('header'));
-      var bMap = api.require('bMap');
       var vm = new Vue({
         el: '#app',
         data: {
@@ -454,6 +451,7 @@
           clockingInfo: null,  //考勤信息
           startTime: null, //上班打卡时间
           attStartAddress: null, //上班打开地点
+
           endTime: null,     //下班时间
           attEndAddress: null,  //下班地址
           // startStuts: "0",//上班打卡状态
@@ -467,8 +465,19 @@
         created: function () {
           //获取打卡信息
           this.getAttendanceRecord();
+          //初始化地图
+          if (api.systemType === 'ios') {
+            this.initMap();
+          }
+
         },
         methods: {
+          // 初始化地图
+          initMap() {
+            bMap.initMapSDK(function (ret, err) {
+              console.log(JSON.stringify(ret) + JSON.stringify(err))
+            });
+          },
           //获取用户消息
           getAttendanceRecord: function () {
             var that = this;
@@ -786,6 +795,26 @@
           },
           //外勤上班打卡
           stateWorkWq: function () {
+            //经度
+            var lon = null;
+            //纬度
+            var lat = null;
+            var that = this;
+            //开始定位
+            bMap.getLocation({
+              accuracy: '10m',
+              autoStop: true,
+              filter: 1
+            }, function (ret, err) {
+              if (ret.status) {
+                console.log(JSON.stringify(ret));
+                lon = ret.lon;
+                lat = ret.lat;
+                that.getAdrInfo(lon, lat);
+              } else {
+                console.log("定位失败" + err.code);
+              }
+            });
             var dialog = new auiDialog({})
             dialog.prompt({
               title: "外勤打卡",
@@ -802,6 +831,19 @@
                 });
               }
             })
+          },
+          //根据经纬度获取地址信息
+          getAdrInfo(lon, lat) {
+            console.log(lon);
+            console.log(lat);
+            //获取当前地址信息
+            bMap.getNameFromCoords({
+              lon: lon,
+              lat: lat
+            }, function (ret, err) {
+              console.log(JSON.stringify(ret));
+              console.log(JSON.stringify(err));
+            });
           },
           //跳转规则页面
           goClockingRule: function () {
