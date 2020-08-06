@@ -342,11 +342,10 @@
 
                     //提交选中数据集合
                     submit: function () {
-                        // if(vm.checkedBox.length){
                         api.sendEvent({
-                            name: 'document_obj_event',
+                            name: 'transmitPer',
                             extra: {
-                                'personliableinfo': $api.jsonToStr(vm.selctList)
+                                sendDuplInfo: $api.jsonToStr(vm.selctList)
                             }
                         });
                         setTimeout(function () {

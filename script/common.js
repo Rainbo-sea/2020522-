@@ -458,6 +458,8 @@ const roleListURL = BASE_URL + '/app/role/roleList' //获取角色列表
 
 const getAttendanceMissListURL = BASE_URL + '/app/attendance/getAttendanceMissList' //获取用户缺卡列表（补卡申请时）
 
+const sendStartApplyURL = BASE_URL + '/app/appAttendanceRecord/sendStartApply' //补卡/出差/请假发起申请、修改申请
+
 function ajaxGet(ismessg, wonrname, interfaceurl, jsonDate, fn) { //网络请求
     if (ismessg) {
         api.showProgress({

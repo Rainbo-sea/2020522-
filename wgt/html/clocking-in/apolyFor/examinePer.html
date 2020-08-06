@@ -186,8 +186,8 @@
         <div class="main_box" v-if="selctList.length">
             <div class="" v-for=" (items,i) in selctList">
                 <div class="title bottom_before_line">
-                    <label tapmode v-if="items " @click="parentFn(items.checked,i)"><input class="aui-radio"
-                            ref="check_parent" :checked="items.checked" type="checkbox" name="checkbox"></label>
+                    <!-- <label tapmode v-if="items " @click="parentFn(items.checked,i)"><input class="aui-radio"
+                            ref="check_parent" :checked="items.checked" type="checkbox" name="checkbox"></label> -->
                     <span tapmode @click="clickCurIndex(i)"><i class="aui-iconfont "
                             :class="[i != curIndex?'aui-icon-right':'aui-icon-down']"></i>{{items.name}}</span>
                 </div>
@@ -196,7 +196,7 @@
                         <div class="list_left bottom_before_line ">
                             <label tapmode><input class="aui-radio mt-5" :checked="item.checked"
                                     :class="'check_child'+i" type="checkbox"
-                                    @click="childFn(item.checked,i,item_i)"></label>
+                                    @click="childFn(item.checked,i,item_i,item)"></label>
                             <div class="logo" v-cloak>{{item.name.substr(-2)}}</div>
                             <p class="aui-ellipsis-1 " v-text="item.name">张建</p>
                         </div>
@@ -244,16 +244,17 @@
 
                 },
                 methods: {
-                    // 父元素状态
-                    parentFn: function (data, i) {
-                        var curenState = this.$refs.check_parent[i].checked;
-                        this.selctList[i].children.forEach(function (item) {
-                            item.checked = curenState;
-                        })
-                        this.selctList[i].checked = curenState;
-                    },
+                    // // 父元素状态
+                    // parentFn: function (data, i) {
+                    //     var curenState = this.$refs.check_parent[i].checked;
+                    //     this.selctList[i].children.forEach(function (item) {
+                    //         item.checked = curenState;
+                    //     })
+                    //     this.selctList[i].checked = curenState;
+                    // },
                     //子元素状态
-                    childFn: function (data, i, child_i) {
+                    childFn: function (data, i, child_i, nextUserInfo) {
+                        // console.log(JSON.stringify(data) + JSON.stringify(child_i) + '-----' + JSON.stringify(nextUserInfo))
                         var _this = this;
                         var clsBox = document.getElementsByClassName('check_child' + i);
                         this.selctList[i].children[child_i].checked = clsBox[child_i].checked;
@@ -263,7 +264,7 @@
                         })
                         console.log(isFlag);
                         this.selctList[i].checked = isFlag;
-                        this.submit();
+                        this.submit(nextUserInfo);
                     },
 
                     clickCurIndex: function (i) {
@@ -340,19 +341,19 @@
                     },
 
                     //提交选中数据集合
-                    submit: function () {
+                    submit: function (nextUserInfo) {
                         // if(vm.checkedBox.length){
                         api.sendEvent({
-                            name: 'document_obj_event',
+                            name: 'nextUserInfo',
                             extra: {
-                                personliableinfo: $api.jsonToStr(vm.selctList)
+                                nextUserInfo: nextUserInfo
                             }
                         });
                         setTimeout(function () {
                             api.closeFrame({
                                 name: 'examinePer'
                             });
-                        }, 1000)
+                        }, 300)
                     },
                     //筛选
                     changeInput: function () {
