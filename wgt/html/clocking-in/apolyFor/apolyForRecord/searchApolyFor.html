@@ -158,26 +158,26 @@
             <div class="mt_10">
                 <h2>状态</h2>
                 <div>
-                    <button class="button" onclick="randomSwitchBtn(this)">待审批</button>
-                    <button class="button" onclick="randomSwitchBtn(this)">通过</button>
-                    <button class="button" onclick="randomSwitchBtn(this)">拒绝</button>
-                    <button class="button" onclick="randomSwitchBtn(this)">已撤销</button>
-                    <button class="button active">不限</button>
+                    <button class="button" onclick="randomSwitchBtn(this,1)">待审批</button>
+                    <button class="button" onclick="randomSwitchBtn(this,0)">通过</button>
+                    <button class="button" onclick="randomSwitchBtn(this,2)">拒绝</button>
+                    <button class="button" onclick="randomSwitchBtn(this,3)">已撤销</button>
+                    <button class="button active" onclick="randomSwitchBtn(this,4)">不限</button>
                 </div>
             </div>
             <div class="mt_10">
                 <h2>类型</h2>
                 <div>
-                    <button class="button1" onclick="selectBtn(this)">补卡</button>
-                    <button class="button1" onclick="selectBtn(this)">请假</button>
-                    <button class="button1" onclick="selectBtn(this)">出差</button>
-                    <button class="button1 active" onclick="selectBtn(this)">不限</button>
+                    <button class="button1" onclick="selectBtn(this,1)">补卡</button>
+                    <button class="button1" onclick="selectBtn(this,3)">请假</button>
+                    <button class="button1" onclick="selectBtn(this,2)">出差</button>
+                    <button class="button1 active" onclick="selectBtn(this,4)">不限</button>
                 </div>
             </div>
             <div class="mt_10">
                 <h2>发起人</h2>
                 <div>
-                    <input type="text" placeholder="输入姓名" class="inpt time startTime">
+                    <input type="text" placeholder="输入姓名" v-model="applyUserName" class="inpt time startTime">
                 </div>
             </div>
             <div class="mt_10">
@@ -204,6 +204,8 @@
 <script type="text/javascript" src="../../../../../commonUi/H5TimeSelector/libs/iosselect.js"></script>
 <script type="text/javascript" src="../../../../../commonUi/H5TimeSelector/timeselector.js"></script>
 <script>
+    var applyType = null; //申请类型
+    var flowStatus = null; //状态
     apiready = function () {
         $api.fixStatusBar($api.byId('app'));
 
@@ -215,11 +217,9 @@
                 resInfo: [], //请求类型数据
                 typeTxt: '', //类型选择展示
                 deviceTxt: '', //选择设备
+                applyUserName: null, //申请人姓名
             },
             created: function () {
-                this.$nextTick(function () {
-                    vm.starttimeFn()
-                })
             },
             methods: {
                 //重置按钮
@@ -228,36 +228,49 @@
                         this.endTime = '',
                         this.typeTxt = '',
                         this.deviceTxt = ''
+                    //重置按钮选择
+                    var btnObj = $api.domAll('.button1')
+                    for (var i = 0; i < btnObj.length; i++) {
+                        $api.removeCls(btnObj[i], 'active');
+                    }
+                    $api.addCls(btnObj[3], 'active');
+
+                    var btnObj = $api.domAll('.button')
+                    for (var i = 0; i < btnObj.length; i++) {
+                        $api.removeCls(btnObj[i], 'active');
+                    }
+                    $api.addCls(btnObj[4], 'active');
+
                 },
                 submit: function () {
-                    console.log($api.jsonToStr(vm.deviceTxt));
+                    var searchInfo = {
+                        startTime: this.startTime,
+                        endTime: this.endTime,
+                        applyType: applyType,
+                        flowStatus: flowStatus,
+                        applyUserName: this.applyUserName
+                    }
                     api.sendEvent({
-                        name: 'towercrane2time',
+                        name: 'searchInfo',
                         extra: {
-                            'startTime': this.startTime,
-                            'endTime': this.endTime,
-                            'alarmType': vm.typeTxt.alarmType,
-                            'currentdeviceNo': vm.deviceTxt.deviceNo
+                            searchInfo: searchInfo
                         }
-                    });
-                    api.closeFrame({
-                        name: 'search_go_storage'
                     });
                     setTimeout(function () {
                         api.closeFrame();
 
                     }, 500)
                 },
-                starttimeFn: function () {
+                // starttimeFn: function () {
 
-                    var d = new Date();
+                //     var d = new Date();
 
-                    var time = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + '  ' +
-                        '00' + ':' + '00' + ':' + '00';
-                    vm.startTime = time;
+                //     var time = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + '  ' +
+                //         '00' + ':' + '00' + ':' + '00';
+                //     vm.startTime = time;
 
 
-                },
+                // },
                 beginTimeFn: function () {
                     timeSelector.fnOpenSelector({
                         title: '时间选择',
@@ -382,7 +395,7 @@
             name: 'searchApolyFor'
         });
     }
-    function selectBtn(tag) {
+    function selectBtn(tag, flage) {
         if (tag == $api.dom('.button1.active')) return;
         var btnObj = $api.domAll('.button1'),
             index = 0;
@@ -394,9 +407,24 @@
             }
         }
         $api.addCls(btnObj[index], 'active');
+        switch (flage) {
+            case 1:
+                applyType = '1';
+                break;
+            case 2:
+                applyType = '2';
+                break;
+            case 3:
+                applyType = '3';
+                break;
+            case 4:
+                applyType = null;
+                break;
+
+        }
     }
-    // 随意切换按钮
-    function randomSwitchBtn(tag) {
+    // 随意切换状态按钮
+    function randomSwitchBtn(tag, flage) {
         if (tag == $api.dom('.button.active')) return;
         var btnObj = $api.domAll('.button'),
             index = 0;
@@ -408,6 +436,25 @@
             }
         }
         $api.addCls(btnObj[index], 'active');
+
+        switch (flage) {
+            case 0:
+                flowStatus = '0';
+                break;
+            case 1:
+                flowStatus = '1';
+                break;
+            case 2:
+                flowStatus = '2';
+                break;
+            case 3:
+                flowStatus = "已撤销";
+                break;
+            case 4:
+                flowStatus = null;
+                break;
+
+        }
     }
 </script>
 

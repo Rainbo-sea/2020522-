@@ -305,7 +305,7 @@
         <div class="user-name">
           {{userInfo.name}}
         </div>
-        <div class="clocking-name" v-clock>
+        <div class="clocking-name">
           考勤组：{{rulesName}}
         </div>
       </div>
@@ -461,6 +461,7 @@
           rulesName: null,   //考勤组
           rulesInfo: null,   //个人考勤规则
           noFieldOperation: null, //外勤打卡标识 false
+          newUserAddr: "重庆市渝北区线外城市花园"  //用户现在地址
         },
         created: function () {
           //获取打卡信息
@@ -479,32 +480,29 @@
             });
           },
           //获取用户消息
-          getAttendanceRecord: function () {
+          getAttendanceRecord() {
             var that = this;
             $app.post(
               true,
-              getProjectLoginUserInfoURL, {
-              projectId: $api.getStorage('enterpriseId'),
-              attTime: $app.formDate(false, '-'),
-              attUserId: $api.getStorage('userId'),
-              attUserName: $api.getStorage('enterLoginInfo').name,
-            },
+              getAttendanceRecordURL,
+              {
+                projectId: $api.getStorage('enterpriseId'),
+                attTime: $app.formDate(false, '-'),
+                attUserId: $api.getStorage('userId'),
+                attUserName: $api.getStorage('enterLoginInfo').name
+              },
               function (ret) {
-                that.clockingInfo = ret.obj
-                console.log("打卡状态" + JSON.stringify(ret));
-                // that.startTime = that.clockingInfo.startTime;
+                console.log("获取用户第一次进入打卡:" + JSON.stringify(ret));
+                that.clockingInfo = ret.obj;
+                that.startTime = that.clockingInfo.startTime;
                 that.endTime = that.clockingInfo.endTime;
                 that.rulesName = that.clockingInfo.rulesName;
-                //设置打卡后文档
+                // //设置打卡后文档
                 that.startTime = that.clockingInfo.startTime.slice(11);
                 that.endTime = that.clockingInfo.endTime.slice(11);
                 that.attStartAddress = that.clockingInfo.attStartAddress;
                 that.attEndAddress = that.clockingInfo.attEndAddress;
                 thisRulesId = that.clockingInfo.rulesId;
-                //修改打卡状态
-                // that.startStuts = that.clockingInfo.startStuts;
-                // that.endStuts = that.clockingInfo.endStuts;
-                //根据返回的数据加载dom
                 that.updateDom();
                 //获取考勤规则
                 that.getRulesInfo(that.clockingInfo.rulesId);
@@ -818,22 +816,19 @@
             var dialog = new auiDialog({})
             dialog.prompt({
               title: "外勤打卡",
-              msg: `这里是内容  <a onclick="lookBdMap()">查看地图<a>`,
+              msg: `${that.newUserAddr}  <a onclick="lookBdMap()">查看地图<a>`,
               text: '请填写外勤备注（选填） ',
               a: '查看地图',
-              buttons: ['取消', '确定']
+              buttons: ['取消', '确认打卡']
             }, function (ret) {
               if (ret.buttonIndex == 2) {
-                dialog.alert({
-                  title: "提示",
-                  msg: "您输入的内容是：" + ret.text,
-                  buttons: ['确定']
-                });
+
               }
             })
           },
           //根据经纬度获取地址信息
           getAdrInfo(lon, lat) {
+            var that = this;
             console.log(lon);
             console.log(lat);
             //获取当前地址信息
@@ -841,8 +836,7 @@
               lon: lon,
               lat: lat
             }, function (ret, err) {
-              console.log(JSON.stringify(ret));
-              console.log(JSON.stringify(err));
+
             });
           },
           //跳转规则页面
@@ -913,7 +907,7 @@
       return num;
     }
     function lookBdMap() {
-      console.log(thisRulesId)
+      console.log('-----------' + thisRulesId)
       api.openWin({
         name: 'bMap',
         url: './bMap/index.html',

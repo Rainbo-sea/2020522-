@@ -134,7 +134,7 @@
             </div>
         </div>
         <div class="footer">
-            <input type="checkbox" class="aui-checkbox float-left" >全选
+            <input type="checkbox" class="aui-checkbox float-left">全选
             <div class="footer-right">
                 <span>合计:</span>&nbsp;&nbsp;&nbsp;&nbsp;
                 <button class="footer-btn-right">确定</button>
@@ -162,6 +162,7 @@
                     //获取对象
                     getRuleObjInfo: function () {
                         var that = this;
+                        console.log("______" + $api.getStorage('enterpriseId'))
                         $app.post(
                             true,
                             roleListURL, {

@@ -146,15 +146,18 @@
                             <img src="../../../../image/clocking-in/xingxing.png" alt="">
                         </div>
                         <div class="text-right">
-                            <span>{{applyStartTime}}</span><span>{{applyClock}}</span>
+                            <span>{{applyStartTime}}</span>&nbsp;&nbsp;<span v-if="applyClock =='1'">上午</span><span
+                                v-if="applyClock =='2'">下午</span>
                             <img src="../../../../image/clocking-in/right.png" alt="">
                         </div>
                     </li>
-                    <li>
+                    <li @click="endTime()">
                         <div class="text-left">结束时间
                             <img src="../../../../image/clocking-in/xingxing.png" alt="">
                         </div>
                         <div class="text-right">
+                            <span>{{applyEndTime}}</span>&nbsp;&nbsp;<span v-if="applyEndClock =='1'">上午</span><span
+                                v-if="applyEndClock =='2'">下午</span>
                             <img src="../../../../image/clocking-in/right.png" alt="">
                         </div>
                     </li>
@@ -163,7 +166,7 @@
                             <img src="../../../../image/clocking-in/xingxing.png" alt="">
                         </div>
                         <div class="name-right">
-                            <input type="text" placeholder="请输入名称">
+                            <input type="text" placeholder="请输入内容" v-model="applyCauser">
                         </div>
                     </li>
                 </ul>
@@ -178,7 +181,7 @@
             </div>
             <div class="askForLeave-content">
                 <ul>
-                    <li>
+                    <li @click="openExaminePer()">
                         <div class="text-left">审批人员
                             <img src="../../../../image/clocking-in/xingxing.png" alt="">
                         </div>
@@ -186,7 +189,7 @@
                             <img src="../../../../image/clocking-in/right.png" alt="">
                         </div>
                     </li>
-                    <li>
+                    <li @click="openTransmitPer()">
                         <div class="text-left">抄送人员</div>
                         <div class="text-right">
                             <img src="../../../../image/clocking-in/right.png" alt="">
@@ -215,8 +218,10 @@
                     leaveType: null, //请假类型
                     leaveTypeText: null, //请假类型文字
                     applyStartTime: null,//申请开始时间
-                    applyEndTime: null,//申请结束时间
                     applyClock: null,//时间段
+                    applyEndTime: null,//申请结束时间
+                    applyEndClock: null, //结束时间段
+                    applyCauser: null,   //申请原因
                 },
                 created: function () {
                     //格式化数据
@@ -283,10 +288,10 @@
                                 that.leaveType = ret.buttonIndex;
                                 switch (that.leaveType) {
                                     case 1:
-                                        that.leaveTypeText = '上午';
+                                        that.applyClock = '1';
                                         break;
                                     case 2:
-                                        that.leaveTypeText = '下午';
+                                        that.applyClock = '2';
                                         break;
                                 }
                             });
@@ -294,7 +299,51 @@
                     },
                     //选择结束时间
                     endTime: function () {
-
+                        var that = this;
+                        //获取日志日期
+                        var timeDate = new Date();
+                        timeSelector.fnOpenSelector({
+                            title: ' ', //选填 |  '时间选择'    |  String         |  选择器标题文案
+                            sureText: '完成', //选填 |    '完成'      |  String        |   确定按钮文案
+                            isShowUnit: true, //选填 |     true      |  Boolean        |  是否显示中文单位名称
+                            itemShowCount: 5, //选填 |      5        |  Number         |  显示的行数
+                            itemHeight: 55, //选填 |      55       |  Number         |  行高度（单位px）
+                            date: timeDate.getFullYear() + '/' + (timeDate.getMonth() + 1) + '/' + timeDate.getDate()   //选填 |   new Date    |  Date/String     |  默认选中的时间
+                        }, function (ret) {
+                            console.log(JSON.stringify(ret))
+                            if (!ret) { return }
+                            var date = new Date(ret.date)
+                            that.applyEndTime = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();//选择的时间年月日
+                            api.actionSheet({
+                                title: '选择时间',
+                                cancelTitle: '取消',
+                                buttons: ['上午', '下午']
+                            }, function (ret, err) {
+                                that.leaveType = ret.buttonIndex;
+                                switch (that.leaveType) {
+                                    case 1:
+                                        that.applyEndClock = '1';
+                                        break;
+                                    case 2:
+                                        that.applyEndClock = '2';
+                                        break;
+                                }
+                            });
+                        })
+                    },
+                    //选择抄送人员
+                    openTransmitPer() {
+                        api.openFrame({
+                            name: 'transmitPer',
+                            url: 'transmitPer.html',
+                        });
+                    },
+                    //选择审批人员
+                    openExaminePer() {
+                        api.openFrame({
+                            name: 'examinePer',
+                            url: 'examinePer.html',
+                        });
                     },
                 },
             })
