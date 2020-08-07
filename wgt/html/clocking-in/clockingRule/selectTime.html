@@ -104,46 +104,46 @@
                         minute: WorkMinute,
                     }, function (ret, err) {
                         if (ret) {
-                            // console.log("上班时间");
+                            console.log("上班时间");
                             that.WorkHour = ret.hour;
                             that.WorkMinute = ret.minute;
                         } else {
                         }
                     });
 
-                    var UICustomPicker = api.require('UICustomPicker');
-                    UICustomPicker.open({
-                        rect: {
-                            x: 0,
-                            y: 450,
-                            w: api.frameWidth,
-                            h: 340
-                        },
-                        styles: {
-                            bg: 'rgba(0,0,0,0)',
-                            normalColor: '#959595',
-                            selectedColor: '#3685dd',
-                            selectedSize: 36,
-                            tagColor: '#3685dd',
-                            tagSize: 10
-                        },
-                        data: [{
-                            tag: '年',
-                            scope: '2000-2200'
-                        }, {
-                            tag: '月',
-                            scope: '1-12'
-                        }],
-                        rows: 3,
-                        fixedOn: api.frameName,
-                        fixed: true
-                    }, function (ret, err) {
-                        if (ret) {
-                            alert(JSON.stringify(ret));
-                        } else {
-                            alert(JSON.stringify(err));
-                        }
-                    });
+                    // var UICustomPicker = api.require('UICustomPicker');
+                    // UICustomPicker.open({
+                    //     rect: {
+                    //         x: 0,
+                    //         y: 450,
+                    //         w: api.frameWidth,
+                    //         h: 340
+                    //     },
+                    //     styles: {
+                    //         bg: 'rgba(0,0,0,0)',
+                    //         normalColor: '#959595',
+                    //         selectedColor: '#3685dd',
+                    //         selectedSize: 36,
+                    //         tagColor: '#3685dd',
+                    //         tagSize: 10
+                    //     },
+                    //     data: [{
+                    //         tag: '年',
+                    //         scope: '2000-2200'
+                    //     }, {
+                    //         tag: '月',
+                    //         scope: '1-12'
+                    //     }],
+                    //     rows: 3,
+                    //     fixedOn: api.frameName,
+                    //     fixed: true
+                    // }, function (ret, err) {
+                    //     if (ret) {
+                    //         alert(JSON.stringify(ret));
+                    //     } else {
+                    //         alert(JSON.stringify(err));
+                    //     }
+                    // });
                 },
 
             }

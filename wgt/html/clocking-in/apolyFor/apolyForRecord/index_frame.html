@@ -180,16 +180,20 @@
 
                     //查看申请记录
                     checkRecord(items) {
-                        // console.log(JSON.stringify(items));
-                        if (items.applyType === '1') {
-                            //1：补卡申请 
+                        console.log(JSON.stringify(items));
+                        switch (items.applyType) {
+                            case '1':
+                                //1：补卡申请 
 
-                        } else if (items.applyType === '2') {
-                            //2：出差申请
+                                break;
+                            case '2':
+                                //2：出差申请
 
-                        } else {
-                            //3：请假申请   
+                                break;
+                            case '3':
+                                //3：请假申请 
 
+                                break;
                         }
                     },
                 },

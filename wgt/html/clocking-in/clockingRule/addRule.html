@@ -315,23 +315,24 @@
                     },
                     //确定选择时间
                     confirmSelectTime() {
-                        if (this.endWorkHour - this.startWorkHour > 0) {
-                            document.getElementsByClassName('select-time-div')[0].style.display = "none";
-                            goWorkTime.close();
-                            if (this.endWorkMinute - this.startWorkMinute > 0) {
-                                this.countWorkHour = this.endWorkHour - this.startWorkHour + (this.endWorkMinute - this.startWorkMinute) / 60
-                                this.countWorkHour = this.countWorkHour.toFixed(1);
-                            } else {
-                                this.countWorkHour = this.endWorkHour - this.startWorkHour - 1 + (this.endWorkMinute + 60 - this.startWorkMinute) / 60
-                                this.countWorkHour = this.countWorkHour.toFixed(1);
-                            }
-                        } else {
-                            api.toast({
-                                msg: '时间选择错误，请重新选择',
-                                duration: 2000,
-                                location: 'middle      '
-                            });
-                        }
+                        document.getElementsByClassName('select-time-div')[0].style.display = "none";
+                        goWorkTime.close();
+                        // if (this.endWorkHour - this.startWorkHour > 0) {
+                        //     goWorkTime.close();
+                        //     if (this.endWorkMinute - this.startWorkMinute > 0) {
+                        //         this.countWorkHour = this.endWorkHour - this.startWorkHour + (this.endWorkMinute - this.startWorkMinute) / 60
+                        //         this.countWorkHour = this.countWorkHour.toFixed(1);
+                        //     } else {
+                        //         this.countWorkHour = this.endWorkHour - this.startWorkHour - 1 + (this.endWorkMinute + 60 - this.startWorkMinute) / 60
+                        //         this.countWorkHour = this.countWorkHour.toFixed(1);
+                        //     }
+                        // } else {
+                        //     api.toast({
+                        //         msg: '时间选择错误，请重新选择',
+                        //         duration: 2000,
+                        //         location: 'middle      '
+                        //     });
+                        // }
                     },
                     //选择上班时间
                     goWorkTime() {
@@ -346,6 +347,7 @@
                             hour: that.startWorkHour,
                             minute: that.startWorkMinute,
                         }, function (ret, err) {
+                            console.log(JSON.stringify(ret) + JSON.stringify(err))
                             if (ret) {
                                 // console.log("上班时间" + JSON.stringify(ret));
                                 that.startWorkHour = ret.hour;

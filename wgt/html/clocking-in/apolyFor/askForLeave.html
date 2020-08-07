@@ -127,6 +127,10 @@
             float: right;
             margin-left: 0.5rem;
         }
+
+        .xinxinImg {
+            margin-left: 0.2rem;
+        }
     </style>
 </head>
 
@@ -146,18 +150,18 @@
                 <ul>
                     <li @click="openAsk()">
                         <div class="text-left">请假类型
-                            <img src="../../../../image/clocking-in/xingxing.png" alt="">
+                            <img style="margin-left: -0.3rem;" src="../../../../image/clocking-in/xingxing.png" alt="">
                         </div>
-                        <div class="text-right" @click="changeData()">
+                        <div class="text-right">
                             {{leaveTypeText}}
                             <img src="../../../../image/clocking-in/right.png" alt="">
                         </div>
                     </li>
                     <li @click="startTime()">
                         <div class="text-left">开始时间
-                            <img src="../../../../image/clocking-in/xingxing.png" alt="">
+                            <img style="margin-left: -0.3rem;" src="../../../../image/clocking-in/xingxing.png" alt="">
                         </div>
-                        <div class="text-right" @change="changeData()">
+                        <div class="text-right">
                             <span>{{applyStartTime}}</span>&nbsp;&nbsp;<span v-if="applyClock =='1'">上午</span><span
                                 v-if="applyClock =='2'">下午</span>
                             <img src="../../../../image/clocking-in/right.png" alt="">
@@ -165,20 +169,20 @@
                     </li>
                     <li @click="endTime()">
                         <div class="text-left">结束时间
-                            <img src="../../../../image/clocking-in/xingxing.png" alt="">
+                            <img style="margin-left: -0.3rem;" src="../../../../image/clocking-in/xingxing.png" alt="">
                         </div>
-                        <div class="text-right" @change="changeData()">
+                        <div class="text-right">
                             <span>{{applyEndTime}}</span>&nbsp;&nbsp;<span v-if="applyEndClock =='1'">上午</span><span
                                 v-if="applyEndClock =='2'">下午</span>
                             <img src="../../../../image/clocking-in/right.png" alt="">
                         </div>
                     </li>
-                    <li @click="changeData()">
+                    <li>
                         <div class="text-left">请假事由
-                            <img src="../../../../image/clocking-in/xingxing.png" alt="">
+                            <img style="margin-left: -0.3rem;" src="../../../../image/clocking-in/xingxing.png" alt="">
                         </div>
                         <div class="name-right">
-                            <input @change="changeData()" type="text" placeholder="请输入内容" v-model="applyCauser">
+                            <input type="text" placeholder="请输入内容" v-model="applyCauser">
                         </div>
                     </li>
                 </ul>
@@ -197,9 +201,9 @@
                 <ul>
                     <li @click="openExaminePer()">
                         <div class="text-left">审批人员
-                            <img src="../../../../image/clocking-in/xingxing.png" alt="">
+                            <img style="margin-left: -0.3rem;" src="../../../../image/clocking-in/xingxing.png" alt="">
                         </div>
-                        <div @change="changeData()" class="text-right">
+                        <div class="text-right">
                             {{nextUserName}}
                             <img src="../../../../image/clocking-in/right.png" alt="">
                         </div>
@@ -263,8 +267,8 @@
                         name: 'nextUserInfo'
                     }, function (ret, err) {
                         // console.log(JSON.stringify(ret.value.nextUserInfo));
-                        that.nextUserId = ret.value.nextUserInfo.name;
-                        that.nextUserName = ret.value.nextUserInfo.userId;
+                        that.nextUserName = ret.value.nextUserInfo.name;
+                        that.nextUserId = ret.value.nextUserInfo.userId;
                     });
                     api.addEventListener({
                         name: 'transmitPer'
@@ -302,19 +306,37 @@
                     },
                     //新增请假申请
                     addRule() {
+                        var that = this;
+                        var applyClock = null;
+                        var applyEndClock = null;
+                        console.log('-----------------:', this.applyClock, this.applyEndClock);
+                        if (this.applyClock == 1) {
+                            applyClock = '上午'
+                        } else {
+                            applyClock = '下午'
+                        }
+                        if (this.applyEndClock) {
+                            applyEndClock = '上午'
+                        } else {
+                            applyEndClock = '下午'
+                        }
+
                         var parme = {
                             applyType: '3',
                             companyId: $api.getStorage('enterpriseId'),
                             projectId: $api.getStorage('enterpriseId'),
                             applyClock: that.applyClock,
                             applyUserId: $api.getStorage('userId'),
-                            applyUserName: $api.getStorage('enterLoginInfo').name,
-                            applyStartTime: this.applyStartTime,
-                            applyEndTime: this.applyEndTime,
-                            applyCauser: this.applyEndTime,
-                            duration: this.applyEndTime,
-                            leaveType: this.applyEndTime,
-                            pictureUrls: [],
+                            applyUserName: $api.getStorage('enterLoginInfo').name,  
+                            applyStartTime: this.applyStartTime + ' ' + applyClock,
+                            applyEndTime: this.applyEndTime + ' ' + applyEndClock,
+                            applyCauser: this.applyCauser,
+                            duration: this.duration,
+                            leaveType: this.leaveType,
+                            pictureUrls: [{
+                                srcPath: this.srcImgUrl,
+                                compressPath: this.compressImgUrl
+                            }],
                             nextUserId: this.nextUserId,
                             nextUserName: this.nextUserName,
                             sendDuplId: this.sendDuplId,
@@ -328,10 +350,15 @@
                                 sendStartApplyURL,
                                 parme,
                                 function (ret) {
-
+                                    console.log(JSON.stringify(ret));
+                                    that.closeWin()
                                 })
                         } else {
-                            this.submitFlage = false;
+                            api.toast({
+                                msg: '部位为必填项...',
+                                duration: 2000,
+                                location: 'bottom'
+                            });
                         }
                     },
                     //补充o
