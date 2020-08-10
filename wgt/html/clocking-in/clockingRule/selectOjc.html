@@ -114,15 +114,12 @@
                     <span class="aui-iconfont aui-icon-left" style="color: #058FFD; font-weight: bold;"></span>
                 </a>
                 <div class="aui-title header_title" style="color: #000000;" id="header_title">新增考勤组</div>
-                <a class="aui-pull-right" tapmode @click="openaddtask()">
-                    <div class="add-btn" @click="addRule()">保存</div>
-                </a>
             </header>
             <div class="aui-searchbar-input aui-border-radius search" tapmode click="doSearch()">
                 <i class="aui-iconfont aui-icon-search"></i>
                 <form action="javascript:search();">
                     <input type="search" placeholder="请输入搜索内容" id="search-input" v-model="searchData"
-                        @change="searchData()">
+                        @input="getSearchData()">
                 </form>
             </div>
             <div class="list-ojc">
@@ -139,7 +136,7 @@
             <input type="checkbox" class="aui-checkbox float-left" v-model="allSelectFlage" @click="allSelect()">全选
             <div class="footer-right">
                 <span>合计:&nbsp;{{checkedCount}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <button class="footer-btn-right">确定</button>
+                <button class="footer-btn-right" @click="addRule()">确定</button>
             </div>
         </div>
     </div>
@@ -155,6 +152,7 @@
                 el: '#app',
                 data: {
                     ruleObjInfo: [],//考勤规则对象: null,//考勤规则对象
+                    ruleObj: [],
                     obj: null,
                     searchData: null,
                     allSelectFlage: false,
@@ -187,24 +185,25 @@
 
                     },
                     //搜索数据
-                    searchData() {
-                        this.searchData;
-                        this.selctList.map(function (items) {
-                            var itemName = items.children;
-                            itemName.forEach(function (item, i) {
-                                var name = item.name;
-                                if (name.indexOf(vm.listIf) != -1) {
-                                    console.log(i);
-                                    itemName.unshift(itemName.splice(i, 1)[0])
-                                }
-                            })
-                        })
-
+                    getSearchData() {
+                        var newRuleObjInfo = this.ruleObj;
+                        var arr = [];
+                        var reg = new RegExp(this.searchData);
+                        if (!this.searchData) {
+                            this.ruleObjInfo = newRuleObjInfo;
+                        }
+                        for (var i = 0; i < newRuleObjInfo.length; i++) {
+                            //如果字符串中不包含目标字符会返回-1
+                            if (newRuleObjInfo[i].position.match(reg)) {
+                                arr.push(newRuleObjInfo[i]);
+                            }
+                        }
+                        this.ruleObjInfo = arr;
                     },
                     //获取对象
                     getRuleObjInfo: function () {
                         var that = this;
-                        console.log("______" + $api.getStorage('enterpriseId'))
+                        // console.log("______" + $api.getStorage('enterpriseId'))
                         $app.post(
                             true,
                             roleListURL, {
@@ -212,7 +211,8 @@
                         },
                             function (ret) {
                                 // console.log(JSON.stringify(ret));
-                                that.ruleObjInfo = ret.obj
+                                that.ruleObjInfo = ret.obj;
+                                that.ruleObj = ret.obj;
                                 that.ruleObjInfo.map(function (items) {
                                     items.selectFlage = false;
 
@@ -223,23 +223,45 @@
                     },
                     //
                     changeValue(items) {
+                        // console.log("选择标识：" + items.selectFlage)
                         var that = this;
-                        items.selectFlage = true;
+                        if (!items.selectFlage) {
+                            items.selectFlage = true;
+                        } else {
+                            items.selectFlage = false;
+                        }
+
                         console.log(JSON.stringify(items));
                         that.checkedCount = null;
                         this.ruleObjInfo.map(function (item) {
                             if (item.selectFlage) {
-                                that.allSelectFlage = false;
                                 that.checkedCount++;
-                            } else {
-                                that.s = true;
                             }
-                        });
+                        })
                     },
                     //返回上一个页面
                     closeWin() {
                         api.closeWin();
-                    }
+                    },
+                    //保存数据
+                    addRule() {
+                        var newRule = [];
+                        this.ruleObjInfo.map(function (items) {
+                            if (items.selectFlage) {
+                                newRule.push(items);
+                            }
+                        });
+                        // console.log("选择的数据为：" + JSON.stringify(newRule));
+                        api.sendEvent({
+                            name: 'selectOjc',
+                            extra: {
+                                selectOjcInfo: newRule
+                            }
+                        });
+                        setTimeout(function () {
+                            api.closeWin();
+                        }, 100)
+                    },
                 },
             })
         } 

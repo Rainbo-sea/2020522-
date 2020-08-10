@@ -149,20 +149,32 @@
                 methods: {
                     //格式化数据
                     layoutData: function () {
-                        if (this.ruleInfo.attendanceWays === "1") {
+                        var attendanceWays = api.pageParam.ruleInfo.attendanceWays;
+                        if (attendanceWays == "1") {
                             this.attendanceWays = "Wi-Fi"
                         }
-                        if (this.ruleInfo.attendanceWays === "2") {
+                        if (attendanceWays == "2") {
                             this.attendanceWays = "地址"
                         }
-                        if (this.ruleInfo.attendanceWays === "1,2" && this.ruleInfo.attendanceWays === 1) {
+                        if (attendanceWays == "3") {
                             this.attendanceWays = "地址、Wi-Fi"
                         }
                     },
                     //返回跳转
                     closeWin: function () {
                         api.closeWin();
-                    }
+                    },
+                    //openaddtask修改考勤组数据
+                    openaddtask() {
+                        var that = this;
+                        api.openFrame({
+                            name: 'addRule',
+                            url: 'addRule.html',
+                            pageParam: {
+                                ruleInfo: that.ruleInfo
+                            }
+                        });
+                    },
                 },
             })
         }

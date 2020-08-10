@@ -62,21 +62,21 @@
                 <span style="font-weight:bold" class="aui-iconfont aui-icon-left"></span>
             </a>
             <div class="aui-title header_title" id="header_title">考勤Wi-Fi</div>
-            <a class="aui-pull-right aui-btn bg-color" style="color: #058FFD;">
+            <a class="aui-pull-right aui-btn bg-color" style="color: #058FFD;" @click="getSelectWifi()">
                 确定
             </a>
         </header>
         <div class="content">
             <div class="selected">
                 <p>已选取 Wi-Fi</p>
-                <div v-for="(items,index) in selectedWifi" :key="index" @click="chooseWifi(buttonInfo[index],index)">
-                    {{item.name}}
+                <div v-for="(items,index) in selectedWifi" :key="index" @click="chooseWifi(items,index)">
+                    {{items.SSID}}
                 </div>
             </div>
             <div class="selected">
                 <p>可选 Wi-Fi</p>
                 <div v-for="(items,index) in choosableWifi" :key="index" v-if="items.SSID"
-                    @click="selectedWifiInfo(items)">
+                    @click="selectedWifiInfo(items,index)">
                     {{items.SSID}}
                 </div>
             </div>
@@ -105,7 +105,6 @@
                     //扫描可用wifi
                     getAllWifi: function () {
                         var that = this;
-                        var gizWifiSDK = api.require('gizWifiSDK');
                         var wifi = api.require('bgnWiFi');
                         wifi.startScan(function (ret, err) {
                             that.choosableWifi = ret.results;
@@ -113,14 +112,27 @@
                     },
                     //删除已选择的wifi
                     chooseWifi: function (items, index) {
-                        // this.choosableWifi.splice(index, 1);
-                        this.selectedWifi.push(items);
+                        this.selectedWifi.splice(index, 1);
+                        this.choosableWifi.push(items);
                     },
                     //添加已选择的wifi
-                    selectedWifiInfo: function (items) {
-                        this.selectedWifi.splice(index, 1);
+                    selectedWifiInfo: function (items, index) {
+                        this.choosableWifi.splice(index, 1);
                         this.selectedWifi.push(items);
-                        alert(JSON.stringify(items1));
+                    },
+                    //回传选择的的wifi
+                    getSelectWifi() {
+                        api.sendEvent({
+                            name: 'selectWifi',
+                            extra: {
+                                selectedWifi: this.selectedWifi
+                            }
+                        });
+                        setTimeout(function () {
+                            api.closeFrame({
+                                name: 'selectWifi'
+                            });
+                        }, 100)
                     },
                     //返回上一个页面
                     closeWin() {

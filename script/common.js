@@ -460,6 +460,8 @@ const getAttendanceMissListURL = BASE_URL + '/app/attendance/getAttendanceMissLi
 
 const sendStartApplyURL = BASE_URL + '/app/appAttendanceRecord/sendStartApply' //补卡/出差/请假发起申请、修改申请
 
+const attendanceRuleURL = BASE_URL + 'app/attendance/attendanceRule' //新增/修改考勤规则
+
 function ajaxGet(ismessg, wonrname, interfaceurl, jsonDate, fn) { //网络请求
     if (ismessg) {
         api.showProgress({
