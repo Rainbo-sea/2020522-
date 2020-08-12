@@ -462,6 +462,14 @@ const sendStartApplyURL = BASE_URL + '/app/appAttendanceRecord/sendStartApply' /
 
 const attendanceRuleURL = BASE_URL + 'app/attendance/attendanceRule' //新增/修改考勤规则
 
+const attendanceForDayURL = BASE_URL + '/app/attendance/attendanceForDay' //日统计全部打卡
+
+const laveEarlyForDayListURL = BASE_URL + '/app/attendance/laveEarlyForDayList' //日统计打卡迟到/早退列表
+
+const missCordForDayListURL = BASE_URL + '/app/attendance/missCordForDayList' //日统计所有缺卡列表
+
+const outAttendanceForDayListURL = BASE_URL + '/app/attendance/outAttendanceForDayList' //日统计：获取项目中当天所有外勤列表
+
 function ajaxGet(ismessg, wonrname, interfaceurl, jsonDate, fn) { //网络请求
     if (ismessg) {
         api.showProgress({

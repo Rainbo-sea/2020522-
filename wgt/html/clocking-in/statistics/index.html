@@ -20,6 +20,7 @@
         .height {
             height: 100%;
             width: 100%;
+            background-color: #ffffff;
         }
 
         .aui-bar-nav .aui-btn .aui-iconfont {
@@ -69,7 +70,7 @@
             width: 100%;
             height: 2.5rem;
             padding-left: 1rem;
-            border-bottom: 1px #e3e4e5 solid;   
+            border-bottom: 1px #e3e4e5 solid;
             border-top: 0;
             padding-top: 0.1rem;
         }
@@ -123,6 +124,13 @@
 
         .checking-list div {
             float: right;
+        }
+
+        .lack-card {
+            width: 100%;
+            padding-left: 0.5rem;
+            color: #909090;
+            display: none;
         }
 
         /* 日统计 */
@@ -212,6 +220,32 @@
             color: #909090;
             font-size: 0.7rem;
         }
+
+        .kaoqing-text {
+            height: 3rem;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .late-count {
+            width: 2rem;
+            height: 3rem;
+            margin-left: 0.5rem;
+        }
+
+        .late-count div:nth-child(1) {
+            width: 2rem;
+            text-align: center;
+            color: #323233;
+            font-size: 1.5rem;
+        }
+
+        .late-count div:nth-child(2) {
+            width: 2rem;
+            text-align: center;
+            color: #787878;
+        }
     </style>
 </head>
 
@@ -243,15 +277,14 @@
                         <i class="aui-iconfont aui-icon-right"></i>
                     </div>
                 </div>
-                <div class="month-list">
-                    <div class="name-img">
-                        张一山
+                <div class="month-list" v-for="(item,index) in allAttendanceInfo" @click="openUserInfo(item)">
+                    <div class="name-img" v-text="item.name">
                     </div>
                     <div class="month-user-name">
-                        张一山 <span>(经理)</span>
+                        <span v-text="strNum(item.name,7)"></span> (<span v-text="item.position"></span>)
                     </div>
                     <div class="float-right">
-                        出勤 20 天
+                        出勤 <span v-text="item.recordNum"></span> 天
                         <i class="aui-iconfont aui-icon-right"></i>
                     </div>
                 </div>
@@ -268,8 +301,10 @@
             <div class="centent-day">
                 <div class="loop-text">
                     <div>打卡人数/应到人数</div>
-                    <div>60/80</div>
-                    <a href="">打卡明细 <i class="aui-iconfont aui-icon-right"></i></a>
+                    <div><span v-text="attendanceForDay.attCount"> </span>/<span
+                            v-text="attendanceForDay.userCount"></span>
+                    </div>
+                    <a @click="openClockIn()">打卡明细 <i class="aui-iconfont aui-icon-right"></i></a>
                 </div>
                 <svg width="100%" height="240" viewBox="0 0 200 200">
                     <circle cx="100" cy="100" r="80" stroke-width="10" stroke="#E5E5E5" fill="none"></circle>
@@ -277,88 +312,172 @@
                         transform="matrix(0, -1, 1, 0, 0, 200)" id="loop-id" stroke-dasharray="219 439"></circle>
                 </svg>
             </div>
+            <div class="kaoqing-text">
+                <div class="late-count">
+                    <div v-text="attendanceForDay.lateCount"></div>
+                    <div>迟到</div>
+                </div>
+                <div class="late-count">
+                    <div v-text="attendanceForDay.laveCount"></div>
+                    <div>早退</div>
+                </div>
+                <div class="late-count">
+                    <div v-text="attendanceForDay.outCount"></div>
+                    <div>外勤</div>
+                </div>
+                <div class="late-count">
+                    <div v-text="attendanceForDay.missCount">20</div>
+                    <div>缺卡</div>
+                </div>
+            </div>
         </div>
         <!-- 我的 -->
         <div class="content-user" id="myChecking">
             <div class="container-header">
-                <div class="name-img">
-                    张一山
+                <div class="name-img" v-text="userInfo.name">
+                    <span v-text="userInfo.name"></span>
                 </div>
                 <div class="user-info">
                     <div class="user-name">
-                        张一山
+                        <span v-text="userInfo.name"></span>
                     </div>
                     <div class="clocking-name" v-clock>
-                        考勤组：考勤组
+                        考勤组：<span v-text="attendanceInfo.rulesName"></span>
                     </div>
                 </div>
                 <div class="clocking-time" @click="selectTime()">
                     <i class="aui-iconfont aui-icon-left"></i>
-                    {{todayTime}}
+                    <span v-text="strNum2(todayTime,7)"></span>
                     <i class="aui-iconfont aui-icon-right"></i>
                 </div>
             </div>
-            <div class="checking-list">
+            <div class="checking-list" @click="recordList()">
                 出勤
                 <div>
-                    12天
+                    <span v-text="attendanceInfo.recordNum"></span>天
                     <i class="aui-iconfont aui-icon-down"></i>
                 </div>
             </div>
-            <div class="checking-list">
+            <div class="lack-card recordList">
+                <div class="checking-list" v-for="(item,index) in attendanceInfo.recordList">
+                    {{item.attTime}} ( {{getWeek(item.attTime)}})
+                    <div>
+                        {{item.recordNum}}天
+                    </div>
+                </div>
+            </div>
+            <div class="checking-list" @click="lateList()">
                 迟到
                 <div>
-                    1 次，共 30 分钟
+                    <span v-text="attendanceInfo.lateCount"></span>次，共<span v-text="attendanceInfo.leateTime"></span>
                     <i class="aui-iconfont aui-icon-down"></i>
                 </div>
             </div>
-            <div class="checking-list">
+            <div class="lack-card lateList">
+                <div class="checking-list" v-for="(item,index) in attendanceInfo.lateList">
+                    {{item.attTime}} ( {{getWeek(item.attTime)}})
+                    <div>
+                        {{item.recordNum}}天
+                    </div>
+                </div>
+            </div>
+            <div class="checking-list" @click="laveEarlList()">
                 早退
                 <div>
-                    1次
+                    <span v-text="attendanceInfo.leaveCount"></span>次
                     <i class="aui-iconfont aui-icon-down"></i>
                 </div>
             </div>
-            <div class="checking-list">
+            <div class="lack-card laveEarlList">
+                <div class="checking-list" v-for="(item,index) in attendanceInfo.laveEarlList">
+                    {{item.attTime}} ( {{getWeek(item.attTime)}})
+                </div>
+            </div>
+            <div class="checking-list" @click="missList()">
                 缺卡
                 <div>
-                    1次
+                    <span v-text="attendanceInfo.missCount"></span>次
                     <i class="aui-iconfont aui-icon-down"></i>
                 </div>
             </div>
-            <div class="checking-list">
+            <div class="lack-card missList">
+                <div class="checking-list" v-for="(item,index) in attendanceInfo.missList">
+                    {{item.attTime}} ( {{getWeek(item.attTime)}})
+                    <div>
+                        {{item.missCount}}次
+                    </div>
+                </div>
+            </div>
+            <div class="checking-list" @click="absetList()">
                 旷工
                 <div>
-                    1天
+                    <span v-text="attendanceInfo.absentNum"></span>天
                     <i class="aui-iconfont aui-icon-down"></i>
                 </div>
             </div>
-            <div class="checking-list">
+            <div class="lack-card absetList">
+                <div class="checking-list" v-for="(item,index) in attendanceInfo.absetList">
+                    {{item.attTime}} ( {{getWeek(item.attTime)}})
+                </div>
+            </div>
+            <div class="checking-list" @click="outRecord()">
                 外勤
                 <div>
-                    1次
+                    <span v-text="attendanceInfo.outCount"></span>次
                     <i class="aui-iconfont aui-icon-down"></i>
                 </div>
             </div>
-            <div class="checking-list">
+            <div class="lack-card outRecord">
+                <div class="checking-list" v-for="(item,index) in attendanceInfo.outRecord">
+                    {{item.attTime}} ( {{getWeek(item.attTime)}})
+                    <div>
+                        {{item.outCount}}次
+                    </div>
+                </div>
+            </div>
+            <div class="checking-list" @click="applyList()">
                 请假
                 <div>
-                    1次
+                    <span v-text="attendanceInfo.appNum"></span>次
                     <i class="aui-iconfont aui-icon-down"></i>
                 </div>
             </div>
-            <div class="checking-list">
+            <div class="lack-card applyList">
+                <div class="checking-list" v-for="(item,index) in attendanceInfo.applyList">
+                    {{item.attTime}} ( {{getWeek(item.attTime)}})
+                    <div>
+                        {{item.recordNum}}天
+                    </div>
+                </div>
+            </div>
+            <div class="checking-list" @click="buessinessList()">
                 出差
                 <div>
-                    1天
+                    <span v-text="attendanceInfo.buessNum"></span>天
                     <i class="aui-iconfont aui-icon-down"></i>
                 </div>
             </div>
-            <div class="checking-list">
+            <div class="lack-card buessinessList">
+                <div class="checking-list" v-for="(item,index) in attendanceInfo.buessinessList">
+                    {{item.attTime}} ( {{getWeek(item.attTime)}})
+                    <div>
+                        {{item.recordNum}}天
+                    </div>
+                </div>
+            </div>
+            <div class="checking-list" @click="cardList()">
                 补卡申请
                 <div>
-                    1次
+                    <span v-text="attendanceInfo.cardNum"></span>次
                     <i class=" aui-iconfont aui-icon-down"></i>
+                </div>
+            </div>
+            <div class="lack-card cardList">
+                <div class="checking-list" v-for="(item,index) in attendanceInfo.cardList">
+                    {{item.attTime}} ( {{getWeek(item.attTime)}})
+                    <div>
+                        {{item.recordNum}}天
+                    </div>
                 </div>
             </div>
         </div>
@@ -382,21 +501,160 @@
                     dayStatistics: {}, //日统计打卡信息
                     todayTime: $app.formDate(false, '-') || null,//默认今天
                     yindao: 20,     //应到人数
+                    userInfo: $api.getStorage('enterLoginInfo') || null, //用户个人信息
+                    attendanceInfo: null,   //我的月考勤统计
+                    allAttendanceInfo: [],   //本月全部人的考勤信息
+                    attendanceForDay: null,   //日统计数据
                 },
                 created: function () {
                     //获取日常打卡信息
                     this.getDayList();
+                    //获取月统计数据=
+                    this.getAttendanceForMonth();
+                    //获取日统计数据
+                    this.getattendanceForDay();
                 },
                 methods: {
+                    //调转打卡详细
+                    openClockIn() {
+                        var that = this;
+                        api.openFrame({
+                            name: 'clockIn',
+                            url: 'clockIn.html',
+                            pageParam: {
+                                attendanceForDay: that.attendanceForDay,
+                                todayTime: that.todayTime
+                            },
+                        })
+                    },
+                    openUserInfo(attendanceInfo) {
+                        api.openFrame({
+                            name: 'userChecking',
+                            url: 'userChecking.html',
+                            pageParam: {
+                                attendanceInfo: attendanceInfo
+                            },
+                        })
+                    },
+                    //获取日统计数据
+                    getattendanceForDay() {
+                        var that = this;
+                        $app.post(
+                            true,
+                            attendanceForDayURL, {
+                            projectId: $api.getStorage('enterpriseId'),
+                            date: that.todayTime,
+                        }, function (ret) {
+                            that.attendanceForDay = ret.obj;
+                            console.log("考勤日统计信息：" + JSON.stringify(that.attendanceForDay));
+                        })
+                    },
+                    //获取月统计数据
+                    getAttendanceForMonth() {
+                        var that = this;
+                        $app.post(
+                            true,
+                            attendanceForMonthURL, {
+                            projectId: $api.getStorage('enterpriseId'),
+                            month: that.strNum(that.todayTime, 7),
+                        }, function (ret) {
+                            that.allAttendanceInfo = ret.obj;
+                            // console.log("考勤月统计全部人信息：" + JSON.stringify(that.allAttendanceInfo));
+                        })
+                    },
+                    //请假详情
+                    applyList() {
+                        var obj = document.getElementsByClassName('applyList')[0];
+                        if (obj.style.display == "none") {
+                            obj.style.display = "block"
+                        } else {
+                            obj.style.display = "none"
+                        }
+                    },
+                    //出差详情
+                    buessinessList() {
+                        var obj = document.getElementsByClassName('buessinessList')[0];
+                        if (obj.style.display == "none") {
+                            obj.style.display = "block"
+                        } else {
+                            obj.style.display = "none"
+                        }
+                    },
+                    //补卡详情
+                    cardList() {
+                        var obj = document.getElementsByClassName('cardList')[0];
+                        if (obj.style.display == "none") {
+                            obj.style.display = "block"
+                        } else {
+                            obj.style.display = "none"
+                        }
+                    },
+                    //外勤详情
+                    outRecord() {
+                        var obj = document.getElementsByClassName('outRecord')[0];
+                        if (obj.style.display == "none") {
+                            obj.style.display = "block"
+                        } else {
+                            obj.style.display = "none"
+                        }
+                    },
+                    //旷工详情
+                    absetList() {
+                        var obj = document.getElementsByClassName('absetList')[0];
+                        if (obj.style.display == "none") {
+                            obj.style.display = "block"
+                        } else {
+                            obj.style.display = "none"
+                        }
+                    },
+                    //早退详情
+                    laveEarlList() {
+                        var obj = document.getElementsByClassName('laveEarlList')[0];
+                        if (obj.style.display == "none") {
+                            obj.style.display = "block"
+                        } else {
+                            obj.style.display = "none"
+                        }
+                    },
+                    //迟到详情
+                    lateList() {
+                        var obj = document.getElementsByClassName('lateList')[0];
+                        if (obj.style.display == "none") {
+                            obj.style.display = "block"
+                        } else {
+                            obj.style.display = "none"
+                        }
+                    },
+                    //出勤详情
+                    recordList() {
+                        var obj = document.getElementsByClassName('recordList')[0];
+                        if (obj.style.display == "none") {
+                            obj.style.display = "block"
+                        } else {
+                            obj.style.display = "none"
+                        }
+                    },
+                    //打开缺卡详情
+                    missList() {
+                        var obj = document.getElementsByClassName('missList')[0];
+                        if (obj.style.display == "none") {
+                            obj.style.display = "block"
+                        } else {
+                            obj.style.display = "none"
+                        }
+                    },
                     //获取日常打卡信息
                     getDayList() {
                         var that = this;
                         $app.post(
                             true,
-                            attendanceForDayListURL, {
+                            attendanceForMonthURL, {
                             projectId: $api.getStorage('enterpriseId'),
-                            date: that.todayTime,
+                            month: that.strNum(that.todayTime, 7),
+                            userId: $api.getStorage('userId')
                         }, function (ret) {
+                            that.attendanceInfo = ret.obj[0];
+                            // console.log("考勤月统计信息：" + JSON.stringify(that.attendanceInfo));
                         })
                     },
                     //控制圆弧的函数
@@ -405,6 +663,45 @@
                         var parme = oneParme + " 535"
                         var loopObj = document.getElementById('loop-id');
                         loopObj.setAttribute('stroke-dasharray', parme);
+                    },
+                    //补充o
+                    addZero(s) {
+                        return s < 10 ? '0' + s : s
+                    },
+                    //选择时间
+                    selectTime() {
+                        var that = this;
+                        api.openPicker({
+                            type: 'date',
+                            maxDate: that.todayTime,
+                            date: that.todayTime,
+                            title: '选择时间'
+                        }, function (ret, err) {
+                            if (ret) {
+                                that.todayTime = ret.year + '-' + that.addZero(ret.month) + '-' + that.addZero(ret.day)
+                                that.getattendanceForDay();
+                                //获取打卡信息
+                                // that.getAttendanceRecord();
+                            } else {
+                                // console.log(JSON.stringify(err));
+                            }
+                        });
+                    },
+                    strNum2(txt, num) {
+                        var str = txt;
+                        str = str.substr(0, num);
+                        return str;
+                    },
+                    //处理数据
+                    getWeek(dateString) {
+                        var dateArray = dateString.split("-");
+                        date = new Date(dateArray[0], parseInt(dateArray[1] - 1), dateArray[2]);
+                        return "星期" + "日一二三四五六".charAt(date.getDay());
+                    },
+                    strNum(txt, num) {
+                        var str = txt;
+                        str = str.substr(0, num) + '...';
+                        return str;
                     }
                 },
             });

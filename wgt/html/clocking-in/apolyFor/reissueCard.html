@@ -215,7 +215,9 @@
                     layoutData: function () { },
                     //返回跳转
                     closeWin: function () {
-                        api.closeWin();
+                        api.closeFrame({
+                            name: 'reissueCard'
+                        });
                     },
                     //
                     addRule: function () {

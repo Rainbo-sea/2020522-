@@ -326,15 +326,15 @@
         <div class="clocking-succeed-time">打卡时间 {{startTime}}</div>
         <div class="label-normal">正常</div>
         <div class="label-late">迟到</div>
-        <div class="label-outwork">外勤</div>
         <div class="label-late">请假</div>
         <div class="label-late">缺卡</div>
+        <div class="label-outwork">外勤</div>
         <div class="addImg">
           <img src="../../../image/clocking-in/kq_icon_place.png" style="float: left;" />
           <div>{{attStartAddress}}</div>
         </div>
 
-        <div class="clocking-error">
+        <div class="clocking-error" @click="applyStartWork()">
           <a>申请补卡&nbsp;&nbsp;</a><i class="aui-iconfont aui-icon-right"
             style=" font-weight: bold; font-size: 0.6rem;"></i>
         </div>
@@ -347,19 +347,19 @@
         <div class="clocking-succeed-time">打卡时间 {{endTime}}</div>
         <div class="label-normal">正常</div>
         <div class="label-late">迟到</div>
-        <div class="label-outwork">外勤</div>
         <div class="label-late">请假</div>
         <div class="label-late">缺卡</div>
         <div class="label-late">早退</div>
+        <div class="label-outwork">外勤</div>
         <div class="addImg">
           <img src="../../../image/clocking-in/kq_icon_place.png" style="float: left;" />
           <div>{{attEndAddress}}</div>
         </div>
 
-        <div class="clocking-error" style="margin-bottom: 0;">
+        <div class="clocking-error" style="margin-bottom: 0;" @click="applyEndWork()">
           <a>申请补卡&nbsp;&nbsp;</a><i class="aui-iconfont aui-icon-right" style=" font-weight: bold;"></i>
         </div>
-        <div class="clocking-error" style="margin-bottom: 0;">
+        <div class="clocking-error" style="margin-bottom: 0;" @click="updateCkocking()">
           <a>更新打卡&nbsp;&nbsp;</a><i class="aui-iconfont aui-icon-right" style=" font-weight: bold;"></i>
         </div>
         <div class="clocking-title" style="margin-left: -2.5rem;margin-top: 2rem;">
@@ -413,7 +413,7 @@
         <!-- 外勤打卡 -->
         <div v-else>
           <div class="clocking-radius">
-            <div class="clocking-radius-div " @click="stateWorkWq()">
+            <div class="clocking-radius-div " @click="endWorkWq()">
               <div>外勤打卡</div>
               <div id="nowtime3"></div>
             </div>
@@ -451,32 +451,34 @@
           clockingInfo: null,  //考勤信息
           startTime: null, //上班打卡时间
           attStartAddress: null, //上班打开地点
-
           endTime: null,     //下班时间
           attEndAddress: null,  //下班地址
-          // startStuts: "0",//上班打卡状态
-          // endStuts: "4",//下班打卡状态,
-          // startStuts: null,//上班打卡状态
+          // startStuts: "1",//上班打卡状态
+          // endStuts: "2",//下班打卡状态,
+          startStuts: null,//上班打卡状态
           endStuts: null,//下班打卡状态,
           rulesName: null,   //考勤组
           rulesInfo: null,   //个人考勤规则
           noFieldOperation: null, //外勤打卡标识 false
-          newUserAddr: "重庆市渝北区线外城市花园"  //用户现在地址
+          newUserAddr: "重庆市渝北区线外城市花园", //用户现在地址
+          isStartOutStuts: null,   //上班打卡外勤
+          isEndOutStuts: null,   //下班打卡外勤
         },
-        created: function () {
+        created() {
           //获取打卡信息
           this.getAttendanceRecord();
           //初始化地图
-          if (api.systemType === 'ios') {
+          if (api.systemType == 'ios') {
             this.initMap();
           }
+          this.updateDom();
 
         },
         methods: {
           // 初始化地图
           initMap() {
             bMap.initMapSDK(function (ret, err) {
-              console.log(JSON.stringify(ret) + JSON.stringify(err))
+              // console.log(JSON.stringify(ret) + JSON.stringify(err))
             });
           },
           //获取用户消息
@@ -487,16 +489,21 @@
               getAttendanceRecordURL,
               {
                 projectId: $api.getStorage('enterpriseId'),
-                attTime: $app.formDate(false, '-'),
+                attTime: this.todayTime,
                 attUserId: $api.getStorage('userId'),
                 attUserName: $api.getStorage('enterLoginInfo').name
               },
               function (ret) {
-                console.log("获取用户第一次进入打卡:" + JSON.stringify(ret));
+                // console.log("获取用户第一次进入打卡:" + JSON.stringify(ret));
                 that.clockingInfo = ret.obj;
                 that.startTime = that.clockingInfo.startTime;
                 that.endTime = that.clockingInfo.endTime;
                 that.rulesName = that.clockingInfo.rulesName;
+
+                that.startStuts = that.clockingInfo.startStuts;
+                that.endStuts = that.clockingInfo.endStuts;
+                that.isStartOutStuts = that.clockingInfo.isStartOutStuts;
+                that.isEndOutStuts = that.clockingInfo.isEndOutStuts;
                 // //设置打卡后文档
                 that.startTime = that.clockingInfo.startTime.slice(11);
                 that.endTime = that.clockingInfo.endTime.slice(11);
@@ -510,7 +517,7 @@
             )
           },
           //获取考勤规则
-          getRulesInfo: function (rulesId) {
+          getRulesInfo(rulesId) {
             var that = this;
             $app.post(
               true,
@@ -525,9 +532,9 @@
             );
           },
           //上班打卡
-          goWork: function () {
+          goWork() {
             var that = this;
-            vm.clockingFlage = true;
+            that.clockingFlage = true;
             document.getElementById("workTextDom").style.display = "block";
             document.getElementById("workTimeDom").style.display = "block"
             document.getElementById("offWorkDom").style.display = "flex"
@@ -555,14 +562,14 @@
                   startOutstutsCauser: "",
                   endOutstutsCauser: "",
                 };
-                console.log(JSON.stringify(parme))
+                // console.log(JSON.stringify(parme))
                 that.punchClock(parme);
               } else {
               }
             });
           },
           //下班打卡
-          offWork: function () {
+          offWork() {
             var that = this;
             vm.offWorkFlage = true;
             document.getElementById("offWorkTextDom").style.display = "block";
@@ -592,28 +599,29 @@
                   startOutstutsCauser: "",
                   endOutstutsCauser: "",
                 };
-                console.log(JSON.stringify(parme))
+                // console.log(JSON.stringify(parme))
                 that.punchClock(parme);
               } else {
               }
             });
           },
           //封装打卡函数
-          punchClock: function (parme) {
+          punchClock(parme) {
             var that = this;
             $app.post(
               true,
               punchClocklURL, parme,
               function (ret) {
-                if (ret.status === 1) {
-                  console.log(JSON.stringify(ret.status))
+                if (ret.status == 1) {
+                  console.log("打卡成功")
+                  // console.log(JSON.stringify(ret.status))
                   //获取打卡状态
                   that.getAttendanceRecord();
                 }
               }
             )
           },
-          getNewTime: function () {
+          getNewTime() {
             //获取年月日
             var time = new Date();
             var month = time.getMonth();
@@ -629,27 +637,27 @@
             return h + ":" + m;
           },
           //根据页面状态渲染dom
-          updateDom: function () {
+          updateDom() {
             //上班打卡渲染
             //正常
-            if (this.startStuts === "0") {
+            if (this.startStuts == "0") {
               document.getElementById("workTextDom").style.display = "block";
               document.getElementById("workTimeDom").style.display = "block"
               document.getElementById("offWorkDom").style.display = "flex"
-              vm.clockingFlage = true;
+              this.clockingFlage = true;
             }
             //迟到
-            if (this.startStuts === "1") {
+            if (this.startStuts == "1") {
               document.getElementsByClassName("label-normal")[0].style.display = "none"
               document.getElementsByClassName("label-late")[0].style.display = "inline"
               document.getElementById("workTextDom").style.display = "block";
               document.getElementById("workTimeDom").style.display = "block"
               document.getElementById("offWorkDom").style.display = "flex"
               document.getElementsByClassName("clocking-error")[0].style.display = "block"
-              vm.clockingFlage = true;
+              this.clockingFlage = true;
             }
             //请假
-            if (this.startStuts === "3") {
+            if (this.startStuts == "3") {
               document.getElementById("workTextDom").style.display = "block";
               document.getElementById("workTimeDom").style.display = "block"
               document.getElementById("offWorkDom").style.display = "flex"
@@ -657,10 +665,10 @@
               document.getElementsByClassName("label-late")[1].style.display = "inline"
               document.getElementsByClassName("addImg")[0].style.display = "none"
               document.getElementsByClassName("label-normal")[0].style.display = "none"
-              vm.clockingFlage = true;
+              this.clockingFlage = true;
             }
             //缺卡
-            if (this.startStuts === "4") {
+            if (this.startStuts == "4") {
               document.getElementById("workTextDom").style.display = "block";
               document.getElementById("workTimeDom").style.display = "block"
               document.getElementById("offWorkDom").style.display = "flex"
@@ -674,29 +682,36 @@
               document.getElementsByClassName("clocking-error")[0].style.display = "block"
               document.getElementById("offWorkDom").style.display = "none"
               document.getElementsByClassName("clocking-correct-work")[0].style.display = "none"
-              document.getElementsByClassName("label-late")[5].style.display = "inline"
+              document.getElementsByClassName("label-late")[0].style.display = "none"
               document.getElementById("offWorkTextDom").style.display = "block";
               document.getElementsByClassName("clocking-title")[1].style.display = "none"
               document.getElementsByClassName("clocking-error")[1].style.display = "block"
+              document.getElementsByClassName("label-late")[3].style.display = "none"
+              document.getElementsByClassName("label-outwork")[0].style.display = "none"
+            }
+            //是否外勤
+            if (this.isStartOutStuts == "1") {
+              document.getElementsByClassName("label-outwork")[0].style.display = "inline"
             }
             //下班打卡渲染
             //正常
-            if (this.endStuts === "0") {
+            if (this.endStuts == "0") {
               document.getElementById("offWorkTextDom").style.display = "block";
               document.getElementsByClassName("clocking-succeed-time")[1].style.display = "inline"
               document.getElementById("offWorkDom").style.display = "none"
             }
             //早退
-            if (this.endStuts === "1") {
+            if (this.endStuts == "1") {
               document.getElementById("offWorkTextDom").style.display = "block";
               document.getElementsByClassName("clocking-succeed-time")[1].style.display = "inline"
               document.getElementById("offWorkDom").style.display = "none"
               document.getElementsByClassName("label-normal")[1].style.display = "none"
               document.getElementsByClassName("label-late")[6].style.display = "inline"
-              document.getElementsByClassName("clocking-error")[2].style.display = "block"
+              document.getElementsByClassName("clocking-error")[2].style.display = "inline"
+              document.getElementsByClassName("clocking-error")[1].style.display = "inline"
             }
             //请假
-            if (this.endStuts === "3") {
+            if (this.endStuts == "3") {
               document.getElementById("offWorkTextDom").style.display = "block";
               document.getElementById("offWorkDom").style.display = "none"
               document.getElementsByClassName("clocking-succeed-time")[1].style.display = "none"
@@ -706,7 +721,7 @@
               document.getElementsByClassName("label-late")[4].style.display = "inline"
             }
             //缺卡
-            if (this.endStuts === "4") {
+            if (this.endStuts == "4") {
               document.getElementById("offWorkTextDom").style.display = "block";
               document.getElementById("offWorkDom").style.display = "none"
               document.getElementsByClassName("clocking-succeed-time")[1].style.display = "none"
@@ -715,17 +730,24 @@
               document.getElementsByClassName("label-normal")[1].style.display = "none"
               document.getElementsByClassName("label-late")[5].style.display = "inline"
               document.getElementsByClassName("clocking-error")[1].style.display = "block"
+              document.getElementsByClassName("clocking-error")[2].style.display = "none"
+              document.getElementsByClassName("label-outwork")[1].style.display = "none"
+              document.getElementsByClassName("label-late")[6].style.display = "none"
+            }
+            //是否外勤
+            if (this.isEndOutStuts == "1") {
+              document.getElementsByClassName("label-outwork")[1].style.display = "inline"
             }
           },
           //点击footer进行跳转
-          goToURL: function (tag) {
+          goToURL(tag) {
             var nameUrl = null;
             var URl = null;
-            if (tag === 'apoly') {
+            if (tag == 'apoly') {
               nameUrl = 'apoly';
               URl = './apolyFor/index.html';
             }
-            if (tag === 'statistics') {
+            if (tag == 'statistics') {
               nameUrl = 'statistics';
               URl = './statistics/index.html';
             }
@@ -735,7 +757,7 @@
             });
           },
           //获取最新位置
-          getNewAdrr: function () {
+          getNewAdrr() {
             var that = this;
             var userMapX = null; //用户当前的纬度
             var userMapY = null; //用户当前的经度
@@ -753,7 +775,7 @@
                 fillColor: '#0000ff'
               }
             });
-            console.log(JSON.stringify(that.rulesInfo));
+            // console.log(JSON.stringify(that.rulesInfo));
             this.timer = setInterval(function () {
               //获取当前位置的经纬度
               bMap.getLocation({
@@ -792,7 +814,7 @@
             }, 1000)
           },
           //外勤上班打卡
-          stateWorkWq: function () {
+          stateWorkWq() {
             //经度
             var lon = null;
             //纬度
@@ -805,7 +827,7 @@
               filter: 1
             }, function (ret, err) {
               if (ret.status) {
-                console.log(JSON.stringify(ret));
+                // console.log(JSON.stringify(ret));
                 lon = ret.lon;
                 lat = ret.lat;
                 that.getAdrInfo(lon, lat);
@@ -822,15 +844,85 @@
               buttons: ['取消', '确认打卡']
             }, function (ret) {
               if (ret.buttonIndex == 2) {
-
+                var parme = {
+                  attClockType: "1",
+                  attId: that.clockingInfo.attId,
+                  attTime: that.todayTime,
+                  startWorkTime: that.rulesInfo.startWorkTime,
+                  attStartAddress: that.rulesInfo.attendanceAddress,
+                  isStartOutStuts: "1",
+                  attStartWifiName: that.rulesInfo.attendanceWifi,
+                  endWorkTime: that.rulesInfo.endWorkTime,
+                  attEndAddress: "",
+                  attEndWifiName: "",
+                  isStartUpdateClock: "0",
+                  isEndUpdateClock: "",
+                  startOutstutsCauser: ret.text,
+                  endOutstutsCauser: "",
+                };
+                // console.log(JSON.stringify(parme))
+                that.punchClock(parme);
+              }
+            })
+          },
+          //外勤下班打卡
+          endWorkWq() {
+            //经度
+            var lon = null;
+            //纬度
+            var lat = null;
+            var that = this;
+            //开始定位
+            bMap.getLocation({
+              accuracy: '10m',
+              autoStop: true,
+              filter: 1
+            }, function (ret, err) {
+              if (ret.status) {
+                // console.log(JSON.stringify(ret));
+                lon = ret.lon;
+                lat = ret.lat;
+                that.getAdrInfo(lon, lat);
+              } else {
+                console.log("定位失败" + err.code);
+              }
+            });
+            var dialog = new auiDialog({})
+            dialog.prompt({
+              title: "外勤打卡",
+              msg: `${that.newUserAddr}  <a onclick="lookBdMap()">查看地图<a>`,
+              text: '请填写外勤备注（选填） ',
+              a: '查看地图',
+              buttons: ['取消', '确认打卡']
+            }, function (ret) {
+              if (ret.buttonIndex == 2) {
+                var parme = {
+                  attClockType: "2",
+                  attId: that.clockingInfo.attId,
+                  attTime: that.todayTime,
+                  startWorkTime: "",
+                  attStartAddress: "",
+                  isStartOutStuts: "",
+                  attStartWifiName: "",
+                  endWorkTime: that.rulesInfo.endWorkTime,
+                  isEndOutStuts: "1",
+                  attEndAddress: that.rulesInfo.attendanceAddress,
+                  attEndWifiName: that.rulesInfo.attendanceWifi,
+                  isStartUpdateClock: "",
+                  isEndUpdateClock: "0",
+                  startOutstutsCauser: "",
+                  endOutstutsCauser: "",
+                };
+                // console.log(JSON.stringify(parme))
+                that.punchClock(parme);
               }
             })
           },
           //根据经纬度获取地址信息
           getAdrInfo(lon, lat) {
             var that = this;
-            console.log(lon);
-            console.log(lat);
+            // console.log(lon);
+            // console.log(lat);
             //获取当前地址信息
             bMap.getNameFromCoords({
               lon: lon,
@@ -840,7 +932,7 @@
             });
           },
           //跳转规则页面
-          goClockingRule: function () {
+          goClockingRule() {
             api.openWin({
               name: 'clockingRule',
               url: './clockingRule/index.html',
@@ -849,26 +941,118 @@
               }
             });
           },
-          closeWin: function () {
+          closeWin() {
             api.closeWin();
           },
           //选择时间
-          selectTime: function () {
+          selectTime() {
+            var that = this;
             api.openPicker({
-              type: 'date_time',
-              date: '2014-05-01 12:30',
+              type: 'date',
+              maxDate: that.todayTime,
+              date: that.todayTime,
               title: '选择时间'
             }, function (ret, err) {
               if (ret) {
-                alert(JSON.stringify(ret));
+                that.todayTime = ret.year + '-' + that.addZero(ret.month) + '-' + that.addZero(ret.day)
+                //获取打卡信息
+                that.getAttendanceRecord();
               } else {
-                alert(JSON.stringify(err));
+                // console.log(JSON.stringify(err));
+              }
+            });
+          },
+          //补充o
+          addZero(s) {
+            return s < 10 ? '0' + s : s
+          },
+          //更新下班打卡
+          updateCkocking() {
+            //经度
+            var lon = null;
+            //纬度
+            var lat = null;
+            var that = this;
+            bMap.getLocation({
+              accuracy: '10m',
+              autoStop: true,
+              filter: 1
+            }, function (ret, err) {
+              if (ret.status) {
+                lon = ret.lon;
+                lat = ret.lat;
+              } else {
+                console.log(err.code);
+              }
+            });
+            //计算两个位置的距离
+            bMap.getDistance({
+              start: {
+                lon: lon,
+                lat: lat
+              },
+              end: {
+                lon: that.rulesInfo.mapY,
+                lat: that.rulesInfo.mapX
+              }
+            }, function (ret) {
+              if (ret.status) {
+                if (ret.distance < that.rulesInfo.mapC) {
+                  
+                } else {
+                  api.toast({
+                    msg: '你不在考勤范围',
+                    duration: 2000,
+                    location: 'bottom'
+                  });
+                }
+              }
+            });
+            // var parme = {
+            //   attClockType: "2",
+            //   attId: that.clockingInfo.attId,
+            //   attTime: that.todayTime,
+            //   startWorkTime: "",
+            //   attStartAddress: "",
+            //   isStartOutStuts: "",
+            //   attStartWifiName: "",
+            //   endWorkTime: that.rulesInfo.endWorkTime,
+            //   isEndOutStuts: "0",
+            //   attEndAddress: that.rulesInfo.attendanceAddress,
+            //   attEndWifiName: that.rulesInfo.attendanceWifi,
+            //   isStartUpdateClock: "",
+            //   isEndUpdateClock: "0",
+            //   startOutstutsCauser: "",
+            //   endOutstutsCauser: "",
+            // };
+            // // console.log(JSON.stringify(parme))
+            // that.punchClock(parme);
+          },
+          //申请上班班补卡
+          applyStartWork() {
+            // console.log("日期：" + this.todayTime + "时间:" + this.rulesInfo.startWorkTime)
+            var that = this;
+            api.openFrame({
+              name: 'reissueCard',
+              url: 'apolyFor/reissueCard.html',
+              pageParam: {
+                applyStartTime: that.todayTime + ' ' + that.rulesInfo.startWorkTime
+              }
+            });
+          },
+          //申请下班班补卡
+          applyEndWork() {
+            var that = this;
+            api.openFrame({
+              name: 'reissueCard',
+              url: 'apolyFor/reissueCard.html',
+              pageParam: {
+                applyStartTime: that.todayTime + ' ' + that.rulesInfo.endWorkTime
               }
             });
           },
         }
       })
-
     }
     setInterval("NowTime()", 1000);
     function NowTime() {
@@ -907,7 +1091,6 @@
       return num;
     }
     function lookBdMap() {
-      console.log('-----------' + thisRulesId)
       api.openWin({
         name: 'bMap',
         url: './bMap/index.html',
