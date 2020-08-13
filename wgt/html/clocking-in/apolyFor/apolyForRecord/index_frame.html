@@ -136,6 +136,7 @@
                     //获取全部的申请数据
                     getAllApply() {
                         var that = this;
+                        console.log("申请记录：");
                         $app.post(
                             true,
                             applyListInfoURL, {
@@ -150,6 +151,7 @@
                             createUserName: "",
                         },
                             function (ret) {
+                                console.log("申请记录：" + JSON.stringify(ret));
                                 that.allApply = ret.obj
                             }
                         );
@@ -182,15 +184,33 @@
                         switch (items.applyType) {
                             case '1':
                                 //1：补卡申请 
-
+                                api.openFrame({
+                                    name: 'reissueCardApoly',
+                                    url: 'reissueCardApoly.html',
+                                    pageParam: {
+                                        reissueCardApolyInfo: items
+                                    }
+                                });
                                 break;
                             case '2':
                                 //2：出差申请
-
+                                api.openFrame({
+                                    name: 'evectionApoly',
+                                    url: 'evectionApoly.html',
+                                    pageParam: {
+                                        evectionApolyInfo: items
+                                    }
+                                });
                                 break;
                             case '3':
                                 //3：请假申请 
-
+                                api.openFrame({
+                                    name: 'approveApoly',
+                                    url: 'approveApoly.html',
+                                    pageParam: {
+                                        approveApolyInfo: items
+                                    }
+                                });
                                 break;
                         }
                     },

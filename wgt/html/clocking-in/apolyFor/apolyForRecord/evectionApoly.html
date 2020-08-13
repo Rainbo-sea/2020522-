@@ -123,7 +123,8 @@
 
         .check-time {
             width: 3rem;
-            height: 2rem;
+            height: 7rem;
+            position: relative;
             float: left;
         }
 
@@ -133,12 +134,27 @@
             text-align: right;
         }
 
+        .check-time div:nth-child(1) {}
+
         .check-time div:nth-child(2) {
             color: #A5A5A5;
             font-size: 0.6rem;
         }
 
+        .check-time div:nth-child(3) {
+            position: absolute;
+            bottom: 1.5rem;
+        }
+
+        .check-time div:nth-child(4) {
+            position: absolute;
+            bottom: 0.6rem;
+            color: #A5A5A5;
+            font-size: 0.6rem;
+        }
+
         .check-text {
+            width: 8rem;
             height: 7rem;
             position: relative;
             float: left;
@@ -162,6 +178,12 @@
         .check-text-name {
             width: 5rem;
             margin-left: 1rem;
+        }
+
+        .text2-position {
+            position: absolute;
+            bottom: 0.5rem;
+            left: 0.7rem;
         }
 
         .broder-vertical {
@@ -245,21 +267,19 @@
             </div>
         </div>
         <div class="flow-text">
+            <div class="check-time">
+                <div>10-24</div>
+                <div>09:30</div>
+                <div>10-24</div>
+                <div>09:30</div>
+            </div>
             <div class="check-text">
                 <div class="check-text1">
-                    <div class="check-time">
-                        <div>10-24</div>
-                        <div>09:30</div>
-                    </div>
                     <div class="check-text-radius"></div>
                     <div class="check-text-name"> <span>张三 </span> <span>待审批 </span></div>
                 </div>
                 <div class="broder-vertical"></div>
-                <div class="check-text1">
-                    <div class="check-time">
-                        <div>10-24</div>
-                        <div>09:30</div>
-                    </div>
+                <div class="check-text1 text2-position">
                     <div class="check-text-radius"></div>
                     <div class="check-text-name"> <span>张三 </span> <span>待审批 </span></div>
                 </div>
