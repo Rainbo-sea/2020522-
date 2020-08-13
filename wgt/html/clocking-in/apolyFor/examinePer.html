@@ -166,7 +166,7 @@
     <div class="container" id="app">
         <div class="fixd">
             <header class="aui-bar aui-bar-nav aui-bar-light">
-                <a class="aui-pull-left aui-btn" onclick="openWin()">
+                <a class="aui-pull-left aui-btn" @click="closeWin()">
                     <span class="aui-iconfont aui-icon-left"></span>
                 </a>
                 <div class="aui-title header_title">选择审批人</div>
@@ -237,15 +237,15 @@
                 watch: {
 
                 },
-                mounted: function () {
+                mounted() {
                 },
 
-                created: function () {
+                created() {
 
                 },
                 methods: {
                     // // 父元素状态
-                    // parentFn: function (data, i) {
+                    // parentFn (data, i) {
                     //     var curenState = this.$refs.check_parent[i].checked;
                     //     this.selctList[i].children.forEach(function (item) {
                     //         item.checked = curenState;
@@ -253,7 +253,7 @@
                     //     this.selctList[i].checked = curenState;
                     // },
                     //子元素状态
-                    childFn: function (data, i, child_i, nextUserInfo) {
+                    childFn(data, i, child_i, nextUserInfo) {
                         // console.log(JSON.stringify(data) + JSON.stringify(child_i) + '-----' + JSON.stringify(nextUserInfo))
                         var _this = this;
                         var clsBox = document.getElementsByClassName('check_child' + i);
@@ -267,13 +267,18 @@
                         this.submit(nextUserInfo);
                     },
 
-                    clickCurIndex: function (i) {
+                    clickCurIndex(i) {
                         this.curIndex == i ? this.curIndex = -1 : this.curIndex = i;
                     },
-
+                    //返回跳转
+                    closeWin() {
+                        api.closeFrame({
+                            name: 'examinePer'
+                        });
+                    },
 
                     //初始化数据
-                    init: function () {
+                    init() {
                         var _this = this;
                         //记住回显默认选中
                         if (api.pageParam.defalutcheck) {
@@ -329,7 +334,7 @@
                     },
 
                     // //标识已选择的数据选中状态
-                    defaultcheck: function () {
+                    defaultcheck() {
                         var isState = null;
                         this.checkedBox.forEach(function (item) {
                             if (item.userId == data.userId) {
@@ -341,7 +346,7 @@
                     },
 
                     //提交选中数据集合
-                    submit: function (nextUserInfo) {
+                    submit(nextUserInfo) {
                         // if(vm.checkedBox.length){
                         api.sendEvent({
                             name: 'nextUserInfo',
@@ -356,7 +361,7 @@
                         }, 300)
                     },
                     //筛选
-                    changeInput: function () {
+                    changeInput() {
                         this.selctList.forEach(function (items) {
                             var itemName = items.children;
                             itemName.forEach(function (item, i) {

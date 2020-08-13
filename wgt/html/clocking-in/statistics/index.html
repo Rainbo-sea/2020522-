@@ -252,7 +252,7 @@
 <body>
     <div id="app" class="height">
         <header class="aui-bar aui-bar-nav bg_f header" id="header">
-            <a class="aui-pull-left aui-btn aui-btn-left" onclick="closeWin()">
+            <a class="aui-pull-left aui-btn aui-btn-left" @click="closeWin()">
                 <span class="aui-iconfont aui-icon-left"></span>
             </a>
             <div class="aui-title color_3">统计</div>
@@ -341,7 +341,7 @@
                     <div class="user-name">
                         <span v-text="userInfo.name"></span>
                     </div>
-                    <div class="clocking-name" v-clock>
+                    <div class="clocking-name">
                         考勤组：<span v-text="attendanceInfo.rulesName"></span>
                     </div>
                 </div>
@@ -502,9 +502,9 @@
                     todayTime: $app.formDate(false, '-') || null,//默认今天
                     yindao: 20,     //应到人数
                     userInfo: $api.getStorage('enterLoginInfo') || null, //用户个人信息
-                    attendanceInfo: null,   //我的月考勤统计
+                    attendanceInfo: {},   //我的月考勤统计
                     allAttendanceInfo: [],   //本月全部人的考勤信息
-                    attendanceForDay: null,   //日统计数据
+                    attendanceForDay: {},   //日统计数据
                 },
                 created: function () {
                     //获取日常打卡信息
@@ -539,6 +539,7 @@
                     //获取日统计数据
                     getattendanceForDay() {
                         var that = this;
+                        console.log("考勤日统计信息：" + JSON.stringify(that.attendanceForDay));
                         $app.post(
                             true,
                             attendanceForDayURL, {
@@ -650,11 +651,11 @@
                             true,
                             attendanceForMonthURL, {
                             projectId: $api.getStorage('enterpriseId'),
-                            month: that.strNum(that.todayTime, 7),
+                            month: that.strNum2(that.todayTime, 7),
                             userId: $api.getStorage('userId')
                         }, function (ret) {
                             that.attendanceInfo = ret.obj[0];
-                            // console.log("考勤月统计信息：" + JSON.stringify(that.attendanceInfo));
+                            console.log("考勤月统计信息：" + JSON.stringify(that.attendanceInfo));
                         })
                     },
                     //控制圆弧的函数
@@ -702,7 +703,10 @@
                         var str = txt;
                         str = str.substr(0, num) + '...';
                         return str;
-                    }
+                    },
+                    closeWin() {
+                        api.closeWin();
+                    },
                 },
             });
         }

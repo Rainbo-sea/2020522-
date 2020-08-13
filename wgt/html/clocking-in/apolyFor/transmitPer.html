@@ -166,7 +166,7 @@
     <div class="container" id="app">
         <div class="fixd">
             <header class="aui-bar aui-bar-nav aui-bar-light">
-                <a class="aui-pull-left aui-btn" onclick="openWin()">
+                <a class="aui-pull-left aui-btn" @click="closeWin()">
                     <span class="aui-iconfont aui-icon-left"></span>
                 </a>
                 <div class="aui-title header_title">选择抄送人</div>
@@ -238,15 +238,15 @@
                 watch: {
 
                 },
-                mounted: function () {
+                mounted() {
                 },
 
-                created: function () {
+                created() {
 
                 },
                 methods: {
                     // 父元素状态
-                    parentFn: function (data, i) {
+                    parentFn(data, i) {
                         var curenState = this.$refs.check_parent[i].checked;
                         this.selctList[i].children.forEach(function (item) {
                             item.checked = curenState;
@@ -254,7 +254,7 @@
                         this.selctList[i].checked = curenState;
                     },
                     //子元素状态
-                    childFn: function (data, i, child_i) {
+                    childFn(data, i, child_i) {
                         var _this = this;
                         var clsBox = document.getElementsByClassName('check_child' + i);
                         this.selctList[i].children[child_i].checked = clsBox[child_i].checked;
@@ -266,13 +266,17 @@
                         this.selctList[i].checked = isFlag;
                     },
 
-                    clickCurIndex: function (i) {
+                    clickCurIndex(i) {
                         this.curIndex == i ? this.curIndex = -1 : this.curIndex = i;
                     },
-
-
+                    //返回跳转
+                    closeWin() {
+                        api.closeFrame({
+                            name: 'transmitPer'
+                        });
+                    },
                     //初始化数据
-                    init: function () {
+                    init() {
                         var _this = this;
                         //记住回显默认选中
                         if (api.pageParam.defalutcheck) {
@@ -324,7 +328,7 @@
                     },
 
                     // //标识已选择的数据选中状态
-                    defaultcheck: function () {
+                    defaultcheck() {
                         var isState = null;
                         this.checkedBox.forEach(function (item) {
                             if (item.userId == data.userId) {
@@ -336,7 +340,7 @@
                     },
 
                     //提交选中数据集合
-                    submit: function () {
+                    submit() {
                         api.sendEvent({
                             name: 'transmitPer',
                             extra: {
@@ -350,7 +354,7 @@
                         }, 100)
                     },
                     //筛选
-                    changeInput: function () {
+                    changeInput() {
                         this.selctList.forEach(function (items) {
                             var itemName = items.children;
                             itemName.forEach(function (item, i) {

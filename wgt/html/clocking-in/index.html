@@ -141,9 +141,7 @@
     function openProjectList() {
         api.openWin({
             name: 'projectList',
-            url: './projectList.html',
-            pageParam: {
-            }
+            url: './projectList.html',s
         });
 
     }
@@ -162,7 +160,10 @@
             frames: [{
                 name: 'index',
                 url: 'index_frame.html',
-                bgColor: '#fff'
+                bgColor: '#fff',
+                pageParam: {
+                    userInfo: api.pageParam.userInfo
+                }
             }, {
                 name: 'apolyFor',
                 url: './apolyFor/index.html',

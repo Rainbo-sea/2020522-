@@ -466,7 +466,13 @@
         },
         created() {
           //获取打卡信息
-          this.getAttendanceRecord();
+          console.log("需要展示的用户数据：" + JSON.stringify(api.pageParam.userInfo))
+          if (api.pageParam.userInfo) {
+
+          } else {
+            this.getAttendanceRecord();
+          }
+
           //初始化地图
           if (api.systemType == 'ios') {
             this.initMap();
@@ -998,7 +1004,7 @@
             }, function (ret) {
               if (ret.status) {
                 if (ret.distance < that.rulesInfo.mapC) {
-                  
+
                 } else {
                   api.toast({
                     msg: '你不在考勤范围',
